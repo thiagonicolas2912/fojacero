@@ -410,7 +410,7 @@ html.mo{overflow:hidden}
 .cd b{font-size:clamp(20px,3.3vw,42px)}
 /* ===== Celular, parte 1: base, navegación e inicio ===== */
 .nvs{display:contents}
-.mn{display:none}
+.mbtn{display:none}
 @media (max-width:768px), (max-height:500px) and (orientation:landscape) and (pointer:coarse){
  :root{--fh:calc(72px + env(safe-area-inset-bottom));--nh:calc(52px + env(safe-area-inset-top))}
  html{scroll-padding-top:calc(var(--nh) + 8px)}
@@ -418,7 +418,7 @@ html.mo{overflow:hidden}
  /* navegación */
  nav{height:var(--nh);padding:env(safe-area-inset-top) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left));gap:8px}
  .br{font-size:21px;min-height:44px;padding:0;touch-action:manipulation;-webkit-user-select:none;user-select:none}
- .mn{display:flex;align-items:center;justify-content:center;width:48px;height:44px;border:2px solid var(--b);border-radius:14px;background:var(--n);color:var(--b);font:600 22px/1 var(--f);cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+ .mbtn{display:flex;align-items:center;justify-content:center;width:48px;height:44px;border:2px solid var(--b);border-radius:14px;background:var(--n);color:var(--b);font:600 22px/1 var(--f);cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
  .nvs{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;padding:8px max(12px,env(safe-area-inset-right)) 12px max(12px,env(safe-area-inset-left));background:rgba(245,241,236,.98);border-bottom:2px solid var(--b);box-shadow:0 14px 30px rgba(124,44,59,.18);opacity:0;visibility:hidden;transform:translateY(-8px);pointer-events:none;transition:opacity .2s var(--out),transform .2s var(--out),visibility 0s .2s}
  nav.ab .nvs{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .2s var(--out),transform .2s var(--out)}
  .nv{text-align:left;min-height:52px;font-size:18px;padding:12px 16px;border-radius:14px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
@@ -479,9 +479,11 @@ html.mo body{overflow:hidden}
  /* plan: en una columna, sin alturas fijas */
  main{display:flex;flex-direction:column;gap:10px;height:auto;min-height:0;margin-top:20px;padding:12px max(12px,env(safe-area-inset-right)) 12px max(12px,env(safe-area-inset-left))}
  .izq,aside{display:contents}
- .cab{order:1;gap:10px}.exp{order:2}.cur{order:3}.ori{order:4}.zt{order:5}.vista{order:6}
+ main{z-index:auto}
+ .cab{display:contents}
+ .cab>div:first-child,.prog{order:1}.exp{order:2}.cur{order:3}.ori{order:4}.zt{order:5}.vista{order:6}.dlb{order:7}
  .sub{font-size:16px}
- .prog{flex:1 1 100%;max-width:none;min-width:0}
+ .prog{flex:none;width:100%;max-width:none;min-width:0}
  .prog p{font-size:17px}
  .dlb{width:100%;margin:0;min-height:48px;font-size:16px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
  .vista{flex:none;min-height:0;display:block;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;border:1px solid rgba(124,44,59,.2);border-radius:14px}
@@ -508,19 +510,20 @@ html.mo body{overflow:hidden}
  .cnota{grid-column:1/-1;font-size:13px;line-height:1.35;margin:0;min-height:2.7em;opacity:0;transition:opacity .3s var(--out)}
  .cur.on #curN,.cur.on .cnota{opacity:1}
  /* panel inferior de la materia */
- .pan{position:fixed;left:0;right:0;bottom:var(--fh);height:45dvh;max-height:none;z-index:25;padding:16px max(16px,env(safe-area-inset-right)) 20px max(16px,env(safe-area-inset-left));border-radius:22px 22px 0 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;opacity:0;visibility:hidden;transform:translateY(calc(100% + 24px))}
+ .pan{position:fixed;left:0;right:0;bottom:var(--fh);height:auto;min-height:44dvh;max-height:calc(100dvh - var(--nh) - var(--fh) - 12px);z-index:25;padding:12px max(14px,env(safe-area-inset-right)) 14px max(14px,env(safe-area-inset-left));border-radius:22px 22px 0 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;opacity:0;visibility:hidden;transform:translateY(calc(100% + 24px))}
  .pan.on{opacity:1;visibility:visible;transform:none}
- html.po body{padding-bottom:calc(var(--fh) + 45dvh)}
- .pan h2{font-size:22px;padding-right:52px;margin-bottom:10px}
+ html.po body{padding-bottom:calc(var(--fh) + var(--ph,45dvh))}
+ .pan h2{font-size:20px;line-height:1.15;padding-right:50px;margin-bottom:6px}
  .x{width:44px;height:44px;font-size:30px;top:8px;right:8px}
- .meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:10px}
+ .meta{display:flex;flex-wrap:wrap;gap:4px 16px;margin-bottom:6px}
  .meta span,.corr{display:flex;flex-direction:column;font-size:16px;line-height:1.3}
- .corr{margin-bottom:10px}
+ .corr{margin-bottom:8px}
  .meta i,.corr i{font-style:normal;font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.65}
  .nota,.est2{font-size:16px;line-height:1.35}
- .acc{display:flex;flex-direction:column;gap:8px}
- .bt{min-height:44px;font-size:16px}
- .rs{font-size:16px;line-height:1.4;min-height:calc(1.4em*var(--ln,2))}
+ .acc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .acc>.ld,.acc>.rs,.acc>.bt:last-child{grid-column:1/-1}
+ .bt{min-height:44px;font-size:15px;padding:10px 12px}
+ .rs{font-size:16px;line-height:1.4;min-height:calc(1.4em*min(var(--ln,2),3))}
  .rs ul{margin:0 0 0 20px}
  .q{font-size:13px;text-transform:uppercase;letter-spacing:.05em;opacity:.7;margin:8px 0 6px}
  .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
@@ -587,11 +590,16 @@ html.mo body{overflow:hidden}
  .ori button{flex:none;width:44px;height:44px;border:0;background:none;color:var(--b);font:400 28px/1 var(--f);cursor:pointer;touch-action:manipulation}
 }
 html.oriOff .ori{display:none}
+/* teléfono en horizontal: el contenido del panel se reparte en dos columnas para que se vea completo */
+@media (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+ .pi{display:block;column-count:2;column-gap:18px;margin-right:52px}
+ .pi>*{break-inside:avoid}
+}
 </style>
 </head>
 <body>
 <div class="fx" aria-hidden="true"><i></i><i></i><i></i></div>
-<nav><button class="br" data-v="inicio">Foja Cero</button><span class="sp"></span><div class="nvs"><button class="nv on" data-v="inicio">Inicio</button><button class="nv" data-v="fechas">Fechas importantes</button><button class="nv" data-v="plan">Mi carrera</button><button class="nv" data-v="horarios">Mis horarios</button></div><button class="mn" id="mnBtn" aria-label="Menú" aria-expanded="false">☰</button></nav>
+<nav><button class="br" data-v="inicio">Foja Cero</button><span class="sp"></span><div class="nvs"><button class="nv on" data-v="inicio">Inicio</button><button class="nv" data-v="fechas">Fechas importantes</button><button class="nv" data-v="plan">Mi carrera</button><button class="nv" data-v="horarios">Mis horarios</button></div><button class="mbtn" id="mnBtn" aria-label="Menú" aria-expanded="false">☰</button></nav>
 <div id="sb" aria-hidden="true"><i></i></div>
 <section id="inicio"><div class="ini-w"><div class="hero">
  <h1 class="rv" style="--d:0ms">Foja Cero</h1>
@@ -1034,7 +1042,7 @@ function htmlPanel(id){if(id==='IDI')return htmlIdioma();if(id==='OYE')return ht
 /* Espacio reservado para el resultado: la mitad del peor caso (si hace falta más, fit() ajusta la tipografía y el recuadro no cambia de tamaño) */
 function lnRes(id){if(!D[id])return 2;const r=req(id);return Math.max(2,Math.ceil((1+r.ids.reduce((a,k)=>a+Math.ceil(nom(k).length/34),0)+(r.n?2:0))/2))}
 /* Sin scroll interno: si el contenido no entra, se achica la tipografía del recuadro lo justo */
-function fit(){if(MQM.matches){pan.style.overflowY='auto';return}pan.style.setProperty('--pf',1);let f=1;while(pan.scrollHeight>pan.clientHeight+1&&f>.78){f=Math.round((f-.03)*100)/100;pan.style.setProperty('--pf',f)}pan.style.overflowY=pan.scrollHeight>pan.clientHeight+1?'auto':'hidden'}
+function fit(){if(MQM.matches){pan.style.overflowY='auto';document.documentElement.style.setProperty('--ph',pan.offsetHeight+'px');return}pan.style.setProperty('--pf',1);let f=1;while(pan.scrollHeight>pan.clientHeight+1&&f>.78){f=Math.round((f-.03)*100)/100;pan.style.setProperty('--pf',f)}pan.style.overflowY=pan.scrollHeight>pan.clientHeight+1?'auto':'hidden'}
 const VACIO='<p class="vacio2">Seleccioná una materia para ver información sobre ella</p>';
 function render(sw){clearTimeout(tm);clearTimeout(tsw);pan.classList.toggle('on',!!sel);document.documentElement.classList.toggle('po',!!sel&&MQM.matches);
  const poner=()=>{if(!sel&&MQM.matches)return;pi.innerHTML=sel?htmlPanel(sel):VACIO;pi.classList.remove('sw');fit()};
