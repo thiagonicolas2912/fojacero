@@ -2,7 +2,7 @@
 <html lang="es-AR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Foja Cero</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -206,7 +206,7 @@ footer{font-size:15px;padding:18px 24px;margin-top:36px}
 html{height:auto;scroll-behavior:auto}
 body{overflow:visible;overflow-x:clip}
 #sb{position:fixed;right:14px;top:50%;height:15vh;width:8px;transform:translateY(-50%);border-radius:8px;background:var(--n);border:1px solid rgba(124,44,59,.3);box-shadow:0 0 8px rgba(124,44,59,.14);z-index:15;overflow:hidden}
-#sb i{display:block;width:100%;height:100%;background:var(--b);transform-origin:50% 0;transform:scaleY(0);transition:transform .1s linear}
+#sb i{display:block;width:100%;height:100%;background:var(--b);transform-origin:50% 0;transform:scaleY(var(--sp,0));transition:transform .1s linear}
 .cur{position:relative;padding:22px;border-radius:22px;background:rgba(245,241,236,.8);border:2px solid rgba(124,44,59,.22)}
 .cur::after{content:"";position:absolute;inset:-2px;border-radius:24px;border:4px solid var(--bv);box-shadow:0 0 18px rgba(27,177,231,.5);opacity:0;transition:opacity .3s var(--out);pointer-events:none}
 .cur.on::after{opacity:1}
@@ -404,11 +404,194 @@ html.mo{overflow:hidden}
 .hob{margin:14px 0 6px;padding:14px 18px;border-radius:16px;border:2px solid var(--b);background:rgba(245,241,236,.8)}
 .hob h4{font-size:20px;margin-bottom:6px}
 .hob p{font-size:16px;line-height:1.4;margin:4px 0}
+/* ===== Pantallas intermedias (769–1230 px): la sección de fechas no desborda; igual que antes desde ~1270 px ===== */
+.fcs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cd{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cd b{font-size:clamp(20px,3.3vw,42px)}
+/* ===== Celular, parte 1: base, navegación e inicio ===== */
+.nvs{display:contents}
+.mn{display:none}
+@media (max-width:768px), (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+ :root{--fh:calc(72px + env(safe-area-inset-bottom));--nh:calc(52px + env(safe-area-inset-top))}
+ html{scroll-padding-top:calc(var(--nh) + 8px)}
+ body{padding-top:var(--nh);-webkit-text-size-adjust:100%}
+ /* navegación */
+ nav{height:var(--nh);padding:env(safe-area-inset-top) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left));gap:8px}
+ .br{font-size:21px;min-height:44px;padding:0;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+ .mn{display:flex;align-items:center;justify-content:center;width:48px;height:44px;border:2px solid var(--b);border-radius:14px;background:var(--n);color:var(--b);font:600 22px/1 var(--f);cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+ .nvs{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;padding:8px max(12px,env(safe-area-inset-right)) 12px max(12px,env(safe-area-inset-left));background:rgba(245,241,236,.98);border-bottom:2px solid var(--b);box-shadow:0 14px 30px rgba(124,44,59,.18);opacity:0;visibility:hidden;transform:translateY(-8px);pointer-events:none;transition:opacity .2s var(--out),transform .2s var(--out),visibility 0s .2s}
+ nav.ab .nvs{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .2s var(--out),transform .2s var(--out)}
+ .nv{text-align:left;min-height:52px;font-size:18px;padding:12px 16px;border-radius:14px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+ /* barra de avance del scroll: horizontal, fina, bajo la navegación */
+ #sb{top:var(--nh);left:0;right:0;width:auto;height:4px;transform:none;border-radius:0;border:0;border-bottom:1px solid rgba(124,44,59,.3);box-shadow:none}
+ #sb i{transform-origin:0 50%;transform:scaleX(var(--sp,0))}
+ /* fondo más liviano */
+ .fx i{animation:none;will-change:auto}
+ .fx i:nth-child(3){display:none}
+ /* portada */
+ #inicio{padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+ .hero{padding:28px 0 8px}
+ .hero h1{font-size:clamp(46px,15vw,76px)}
+ .baj{font-size:clamp(18px,5.2vw,22px);line-height:1.35;margin-top:10px}
+ .nof{display:block;width:max-content;max-width:100%;margin:12px auto 0}
+ .cta{display:block;width:100%;min-height:56px;font-size:20px;padding:14px 20px;margin-top:22px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+ .avance{margin-top:20px}
+ .pct{font-size:20px}.pct b{font-size:44px}
+ .vacio{font-size:16px}
+ .avance .pista{width:100%;height:8px}
+ /* secciones */
+ #fechas,#como,.priv{padding:28px max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+ .ini-w h2{font-size:28px;margin-bottom:14px}
+ /* fechas importantes */
+ .fl{grid-template-columns:1fr;gap:14px}
+ .fcs{grid-template-columns:1fr;gap:12px}
+ .fc{padding:14px 16px;border-radius:18px;-webkit-user-select:none;user-select:none}
+ .fc h3{font-size:19px;min-height:0;margin-bottom:6px}
+ .fc p{font-size:16px}
+ .fc p span{width:56px;font-size:12px}
+ .est{font-size:16px;margin:8px 0 4px}
+ .cd{display:flex;gap:10px;justify-content:flex-start;text-align:left}
+ .cd div{display:flex;align-items:baseline;gap:2px}
+ .cd b{display:inline;font-size:26px}
+ .cd small{font-size:0;text-transform:none;letter-spacing:0;opacity:.85}
+ .cd small::first-letter{font-size:16px}
+ .lk{min-height:56px;font-size:18px;padding:14px 48px 14px 16px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+ .lk small{font-size:16px}
+ /* cómo funciona */
+ .pasos{grid-template-columns:1fr;gap:10px}
+ .paso{display:grid;grid-template-columns:48px 1fr;column-gap:14px;align-items:start;padding:14px 16px;border-radius:18px;-webkit-user-select:none;user-select:none}
+ .nn{width:48px;height:48px;font-size:22px;margin:0;grid-row:1/3}
+ .paso h3{font-size:20px;margin:0 0 4px}
+ .paso p{font-size:16px;line-height:1.4}
+ /* aviso de privacidad y pie fijo */
+ .priv{padding-top:24px;padding-bottom:20px}
+ .priv p{display:block;font-size:16px;line-height:1.4;padding:12px 16px;border-radius:16px}
+ footer{font-size:12px;line-height:1.3;height:var(--fh);padding:7px max(12px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(12px,env(safe-area-inset-left))}
+ /* alturas ligadas a la pantalla en dvh (ventanas) */
+ .mdl{max-height:84dvh}.pv img{max-height:60dvh}
+}
+@media(prefers-reduced-motion:reduce){.nvs{transition:none}}
+@media (max-height:500px) and (orientation:landscape) and (pointer:coarse){:root{--fh:calc(46px + env(safe-area-inset-bottom))}}
+/* ===== Celular, parte 2: plan, zoom, paneles, ventanas y horarios ===== */
+.zt,.ori,.expb,#hdet{display:none}
+html.mo body{overflow:hidden}
+@media (max-width:768px), (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+ /* plan: en una columna, sin alturas fijas */
+ main{display:flex;flex-direction:column;gap:10px;height:auto;min-height:0;margin-top:20px;padding:12px max(12px,env(safe-area-inset-right)) 12px max(12px,env(safe-area-inset-left))}
+ .izq,aside{display:contents}
+ .cab{order:1;gap:10px}.exp{order:2}.cur{order:3}.ori{order:4}.zt{order:5}.vista{order:6}
+ .sub{font-size:16px}
+ .prog{flex:1 1 100%;max-width:none;min-width:0}
+ .prog p{font-size:17px}
+ .dlb{width:100%;margin:0;min-height:48px;font-size:16px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+ .vista{flex:none;min-height:0;display:block;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;border:1px solid rgba(124,44,59,.2);border-radius:14px}
+ #hoja{margin:0 auto}
+ /* zoom y aviso de orientación */
+ .zt{display:flex;justify-content:flex-end;gap:8px}
+ .zt button{min-width:44px;min-height:44px;padding:0 14px;border:2px solid var(--b);border-radius:12px;background:var(--n);color:var(--b);font:600 15px var(--f);cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+ .zt button[data-z="-"],.zt button[data-z="+"]{font-size:24px;padding:0}
+ .zt button:active{transform:scale(.95)}
+ /* "¿Cómo funciona?" desplegable */
+ .exp{padding:0;border-radius:14px}
+ .expb{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:48px;padding:10px 14px;border:0;background:none;color:var(--b);font:600 16px var(--f);cursor:pointer;touch-action:manipulation}
+ .expb::after{content:"▾";font-size:18px;transition:transform .2s var(--out)}
+ .exp.ab .expb::after{transform:rotate(180deg)}
+ .exp b{display:none}
+ .expt{display:none;font-size:16px;line-height:1.45;padding:0 14px 14px}
+ .exp.ab .expt{display:block;animation:fadeo .25s var(--out)}
+ /* barra de materias cursables (tamaño constante) */
+ .cur{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;padding:12px 14px;border-radius:16px}
+ .cur h3{grid-column:1/-1;font-size:16px;line-height:1.25;margin:0;min-height:2.5em}
+ .cur .bt{width:auto;min-height:44px;padding:10px 14px;font-size:15px}
+ .cinfo,.cinfo>div{display:contents}
+ #curN{margin:0;font-size:15px;line-height:1.25;font-weight:600;min-height:0;opacity:0;transition:opacity .3s var(--out)}
+ .cnota{grid-column:1/-1;font-size:13px;line-height:1.35;margin:0;min-height:2.7em;opacity:0;transition:opacity .3s var(--out)}
+ .cur.on #curN,.cur.on .cnota{opacity:1}
+ /* panel inferior de la materia */
+ .pan{position:fixed;left:0;right:0;bottom:var(--fh);height:45dvh;max-height:none;z-index:25;padding:16px max(16px,env(safe-area-inset-right)) 20px max(16px,env(safe-area-inset-left));border-radius:22px 22px 0 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;opacity:0;visibility:hidden;transform:translateY(calc(100% + 24px))}
+ .pan.on{opacity:1;visibility:visible;transform:none}
+ html.po body{padding-bottom:calc(var(--fh) + 45dvh)}
+ .pan h2{font-size:22px;padding-right:52px;margin-bottom:10px}
+ .x{width:44px;height:44px;font-size:30px;top:8px;right:8px}
+ .meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:10px}
+ .meta span,.corr{display:flex;flex-direction:column;font-size:16px;line-height:1.3}
+ .corr{margin-bottom:10px}
+ .meta i,.corr i{font-style:normal;font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.65}
+ .nota,.est2{font-size:16px;line-height:1.35}
+ .acc{display:flex;flex-direction:column;gap:8px}
+ .bt{min-height:44px;font-size:16px}
+ .rs{font-size:16px;line-height:1.4;min-height:calc(1.4em*var(--ln,2))}
+ .rs ul{margin:0 0 0 20px}
+ .q{font-size:13px;text-transform:uppercase;letter-spacing:.05em;opacity:.7;margin:8px 0 6px}
+ .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+ .chips.c1{grid-template-columns:1fr}
+ .est2{margin:8px 0 12px}
+ .hrs{display:flex;flex-direction:column;gap:4px}
+ .hr{display:flex;justify-content:space-between;gap:8px;font-size:16px;line-height:1.3}
+ .hm{font-weight:700;font-size:18px;margin:10px 0}
+ .hm.ok{text-decoration:underline;text-decoration-color:var(--bv);text-decoration-thickness:3px;text-underline-offset:3px}
+ .stp{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:16px;margin-bottom:12px}
+ .stp>div{display:flex;align-items:center;gap:10px}
+ .stp b{min-width:2.6em;text-align:center;font-size:20px}
+ .st{width:48px;height:48px;border-radius:50%;border:2px solid var(--b);background:var(--n);color:var(--b);font:600 26px/1 var(--f);cursor:pointer;touch-action:manipulation}
+ .st[disabled]{opacity:.35}
+ /* ventanas a pantalla completa */
+ .mod{place-items:stretch;background:var(--n)}
+ .mdl{width:100%;max-width:none;height:100dvh;max-height:100dvh;border:0;border-radius:0;box-shadow:none;transform:translateY(18px)}
+ .mod.on .mdl{transform:none}
+ .mh{padding:max(10px,env(safe-area-inset-top)) 8px 8px 16px;border-bottom:1px solid rgba(124,44,59,.2)}
+ .mh h3{font-size:22px}
+ .mx{width:48px;height:48px;font-size:34px}
+ .mc{padding:10px 16px;font-size:16px}
+ .ml{padding:8px max(12px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+ .pv img{max-height:none}
+ .pvb{padding-bottom:max(18px,env(safe-area-inset-bottom))}
+ .mr{grid-template-columns:1fr;gap:8px;padding:14px}
+ .mn b{font-size:17px}.mn small,.ms{font-size:15px}
+ .ck{min-height:44px;font-size:16px}.ck input{width:28px;height:28px}
+ .vcb{min-height:44px;font-size:15px;padding:10px 16px}
+ .sh{font-size:14px}
+ .pbt{min-height:48px}
+ .cc{padding:14px}.cch{font-size:17px}.cc p{font-size:16px}.cc p i{font-size:12px}
+ .cc .pbt{width:100%}
+ .avc{font-size:16px}.cg{font-size:20px}.vacio3{font-size:16px}
+ /* simulador */
+ #horarios{padding:28px max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+ .hsub{font-size:17px;line-height:1.4;margin-bottom:12px}
+ .hbar{display:block}
+ .hbar .pbt{display:block;width:100%}
+ .hw{overflow-x:auto;overflow-y:hidden;padding-bottom:0;border-radius:14px;border:1px solid rgba(124,44,59,.2)}
+ .hs{position:relative}
+ .hgrid{position:absolute;left:0;top:0;width:760px;min-width:0;transform-origin:0 0}
+ .hb small{display:block}
+ .hb b{font-size:14px}.hb small{font-size:12px}
+ .hx{display:none}
+ .hb{cursor:pointer;touch-action:manipulation}
+ .hb.sel{outline:4px solid var(--bv);outline-offset:-2px}
+ #hdet{display:block}
+ .hdc{padding:14px 16px;margin:10px 0;border-radius:16px;border:2px solid var(--b);background:rgba(245,241,236,.85)}
+ .hdc h4{font-size:19px;margin-bottom:6px}
+ .hdc p{font-size:16px;margin:4px 0}
+ .hdc p i{display:block;font-style:normal;font-size:12px;text-transform:uppercase;letter-spacing:.05em;opacity:.65}
+ .hdc .pbt{width:100%;margin-top:8px}
+ .av{font-size:16px}
+ .hr2{display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:14px 16px;border-radius:16px}
+ .hr2 b{font-size:17px}
+ .hr2 .tg{align-self:flex-start}
+ .hr2 .pbt{width:100%;margin-top:4px}
+ .hob{padding:12px 14px}.hob p{font-size:16px}
+ .hnota{font-size:13px}
+}
+@media(max-width:768px) and (orientation:portrait){
+ .ori{display:flex;align-items:center;gap:6px;padding:4px 4px 4px 14px;border-radius:14px;background:rgba(27,177,231,.16);border:1px solid var(--bv);font-size:14px;line-height:1.3}
+ .ori button{flex:none;width:44px;height:44px;border:0;background:none;color:var(--b);font:400 28px/1 var(--f);cursor:pointer;touch-action:manipulation}
+}
+html.oriOff .ori{display:none}
 </style>
 </head>
 <body>
 <div class="fx" aria-hidden="true"><i></i><i></i><i></i></div>
-<nav><button class="br" data-v="inicio">Foja Cero</button><span class="sp"></span><button class="nv on" data-v="inicio">Inicio</button><button class="nv" data-v="fechas">Fechas importantes</button><button class="nv" data-v="plan">Mi carrera</button><button class="nv" data-v="horarios">Mis horarios</button></nav>
+<nav><button class="br" data-v="inicio">Foja Cero</button><span class="sp"></span><div class="nvs"><button class="nv on" data-v="inicio">Inicio</button><button class="nv" data-v="fechas">Fechas importantes</button><button class="nv" data-v="plan">Mi carrera</button><button class="nv" data-v="horarios">Mis horarios</button></div><button class="mn" id="mnBtn" aria-label="Menú" aria-expanded="false">☰</button></nav>
 <div id="sb" aria-hidden="true"><i></i></div>
 <section id="inicio"><div class="ini-w"><div class="hero">
  <h1 class="rv" style="--d:0ms">Foja Cero</h1>
@@ -435,10 +618,12 @@ html.mo{overflow:hidden}
    <div class="prog"><p><span><b id="nf">0</b> % de la carrera</span></p><div class="pista"><b id="pista"></b></div></div>
    <button class="dlb" id="dlProg">Descargar como imagen</button>
   </div>
+  <div class="ori" role="note"><span>Para una mejor experiencia recomendamos usar la página en formato horizontal.</span><button type="button" aria-label="Cerrar aviso">×</button></div>
+  <div class="zt" data-t="p"><button type="button" data-z="-" aria-label="Alejar">−</button><button type="button" data-z="0">Ajustar</button><button type="button" data-z="+" aria-label="Acercar">+</button></div>
   <div class="vista" id="vista"><div id="hoja"><div id="esc"></div></div></div>
  </section>
  <aside>
-  <div class="exp"><b>¿Qué es esto?</b>Un simulador: marcá las materias que ya aprobaste y mirá qué podés cursar según las correlatividades.</div>
+  <div class="exp"><button type="button" class="expb" aria-expanded="false">¿Cómo funciona?</button><b>¿Qué es esto?</b><span class="expt">Un simulador: marcá las materias que ya aprobaste y mirá qué podés cursar según las correlatividades.</span></div>
   <div class="cur sr" id="curbox" style="--d:80ms"><h3 id="curT">¿No sabés qué materia podés cursar?</h3><button class="bt" id="btnCur" aria-pressed="false">Clickeá acá y fijate</button><div class="cinfo"><div><p id="curN"></p><p class="cnota">Según las correlatividades. Confirmá siempre en el SIU Guaraní.</p></div></div></div>
   <div class="pan" id="pan" role="dialog" aria-label="Información de la materia"><div class="pi" id="pi"></div></div>
  </aside>
@@ -448,7 +633,10 @@ html.mo{overflow:hidden}
  <p class="hsub sr">Armá tu horario: en cada materia de Mi carrera tocá «Ver cátedras» y agregá la comisión que te interese. Para los idiomas, usá «Ver los horarios» en el recuadro de Idioma Extranjero.</p>
  <div class="hbar sr"><button class="pbt p" id="dlHor">Descargar como imagen</button></div>
  <div id="havisos"></div>
- <div class="hw sr"><div class="hgrid" id="hgrid"></div></div>
+ <div class="ori" role="note"><span>Para una mejor experiencia recomendamos usar la página en formato horizontal.</span><button type="button" aria-label="Cerrar aviso">×</button></div>
+ <div class="zt" data-t="h"><button type="button" data-z="-" aria-label="Alejar">−</button><button type="button" data-z="0">Ajustar</button><button type="button" data-z="+" aria-label="Acercar">+</button></div>
+ <div class="hw sr" id="hw"><div class="hs" id="hs"><div class="hgrid" id="hgrid"></div></div></div>
+ <div id="hdet"></div>
  <div id="hobs"></div>
  <div id="hlist"></div>
  <p class="hnota">Estos horarios son los que se dictaron en los dos cuatrimestres de 2026 y pueden estar sujetos a cambios. Cuando se publiquen los horarios de 2027, se actualizarán. Confirmá siempre en el SIU Guaraní.</p>
@@ -811,7 +999,12 @@ function dibujar(){
  esc.innerHTML=`<svg id="ln" viewBox="0 0 ${W} ${H}">${trazar()}</svg>`+ord.map((id,i)=>{const[x,y,w,h,l]=POSICIONES[id];
   return`<div class="m${id==='OYE'?' oyeb':''}" role="button" tabindex="0" data-id="${id}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;animation-delay:${i*28}ms"><span>${txt(id)}</span><div class="f"><span>${txt(id)}</span></div></div>`}).join('')}
 function pintar(){esc.querySelectorAll('.m').forEach(b=>{const f=fill(b.dataset.id),e=b.querySelector('.f');e.classList.toggle('f1',f===1);e.classList.toggle('f2',f===.5);if(b.dataset.id==='OYE')e.style.clipPath=`inset(0 ${(1-progresoHoras())*100}% 0 0)`})} /* Optativas y electivas: se va llenando con las horas */
-function ajustar(){if(!vista.clientWidth)return;const s=innerWidth<=820?.5:Math.min((vista.clientWidth-4)/W,(vista.clientHeight-4)/H);hoja.style.width=W*s+'px';hoja.style.height=H*s+'px';esc.style.transform=`scale(${s})`;esc.style.setProperty('--k',s)}
+/* Zoom para celular (componente reutilizable: plan y grilla): entra completo en el ancho; − / Ajustar / + hasta 150 % */
+const MQM=matchMedia('(max-width:768px), (max-height:500px) and (orientation:landscape) and (pointer:coarse)');
+function mkZoom(vp,nw,apply){const Z={s:null,fit:()=>Math.min(1,vp.clientWidth/nw()),cur:()=>Z.s==null?Z.fit():Math.min(1.5,Math.max(Z.fit(),Z.s)),
+ paso(m){const n=Z.cur()*m;Z.s=n<=Z.fit()*1.001?null:Math.min(1.5,n);apply()},ajustar(){Z.s=null;apply()}};return Z}
+const ZP=mkZoom(vista,()=>W,()=>ajustar());
+function ajustar(){if(!vista.clientWidth)return;const s=MQM.matches?ZP.cur():innerWidth<=820?.5:Math.min((vista.clientWidth-4)/W,(vista.clientHeight-4)/H);hoja.style.width=W*s+'px';hoja.style.height=H*s+'px';esc.style.transform=`scale(${s})`;esc.style.setProperty('--k',s)}
 
 /* ===== PROGRESO ===== */
 const T=Object.keys(POSICIONES).length,fmt=x=>String(Math.round(x*2)/2).replace('.',',');let cur=0,raf;
@@ -841,14 +1034,14 @@ function htmlPanel(id){if(id==='IDI')return htmlIdioma();if(id==='OYE')return ht
 /* Espacio reservado para el resultado: la mitad del peor caso (si hace falta más, fit() ajusta la tipografía y el recuadro no cambia de tamaño) */
 function lnRes(id){if(!D[id])return 2;const r=req(id);return Math.max(2,Math.ceil((1+r.ids.reduce((a,k)=>a+Math.ceil(nom(k).length/34),0)+(r.n?2:0))/2))}
 /* Sin scroll interno: si el contenido no entra, se achica la tipografía del recuadro lo justo */
-function fit(){pan.style.setProperty('--pf',1);let f=1;while(pan.scrollHeight>pan.clientHeight+1&&f>.78){f=Math.round((f-.03)*100)/100;pan.style.setProperty('--pf',f)}pan.style.overflowY=pan.scrollHeight>pan.clientHeight+1?'auto':'hidden'}
+function fit(){if(MQM.matches){pan.style.overflowY='auto';return}pan.style.setProperty('--pf',1);let f=1;while(pan.scrollHeight>pan.clientHeight+1&&f>.78){f=Math.round((f-.03)*100)/100;pan.style.setProperty('--pf',f)}pan.style.overflowY=pan.scrollHeight>pan.clientHeight+1?'auto':'hidden'}
 const VACIO='<p class="vacio2">Seleccioná una materia para ver información sobre ella</p>';
-function render(sw){clearTimeout(tm);clearTimeout(tsw);
- const poner=()=>{pi.innerHTML=sel?htmlPanel(sel):VACIO;pi.classList.remove('sw');fit()};
+function render(sw){clearTimeout(tm);clearTimeout(tsw);pan.classList.toggle('on',!!sel);document.documentElement.classList.toggle('po',!!sel&&MQM.matches);
+ const poner=()=>{if(!sel&&MQM.matches)return;pi.innerHTML=sel?htmlPanel(sel):VACIO;pi.classList.remove('sw');fit()};
  if(sw!==false&&pi.innerHTML){pi.classList.add('sw');tsw=setTimeout(poner,130)}else poner()}
 function consultar(){const L=pan.querySelector('.ld'),R=pan.querySelector('.rs'),id=sel;clearTimeout(tm);
  R.classList.remove('v');L.classList.remove('run','ok');void L.offsetWidth;L.classList.add('run');
- tm=setTimeout(()=>{L.classList.add('ok');R.innerHTML=puede(id);R.classList.add('v');fit()},500)}
+ tm=setTimeout(()=>{L.classList.add('ok');R.innerHTML=puede(id);R.classList.add('v');fit();if(MQM.matches){const t=R.offsetTop+R.offsetHeight-pan.clientHeight+24;if(t>pan.scrollTop)pan.scrollTo({top:t,behavior:RM?'auto':'smooth'})}},500)}
 function cambio(){Guardado.escribir(est);pintar();textos();prog();pintarAvance();pintarCur();render(false)}
 function cerrar(){sel=null;marcar();render()}
 esc.addEventListener('click',e=>{const b=e.target.closest('.m');if(!b){if(sel)cerrar();return}
@@ -910,13 +1103,29 @@ function pintarHorarios(){const{pares,flags}=superposiciones(),n=materiasContada
  h+='<div class="hts">'+Array.from({length:(HORA1-HORA0)/2},(_,i)=>`<span style="top:calc(${2*i}*var(--hh))">de ${HORA0+2*i} a ${HORA0+2*i+2}</span>`).join('')+'</div>';
  const bl=est.hor.flatMap(id=>COM[id].b.map((b,i)=>[id,i,b]));
  DIAS.forEach(d=>{h+='<div class="hc">'+bl.filter(x=>x[2][0]===d).map(([id,i,b])=>{const k=COM[id],t0=minH(b[1]),t1=minH(b[2]);
-  return`<div class="hb${flags.has(id+'#'+i)?' al':''}${id===nuevoId?' nuevo':''}" style="top:calc(${(t0-HORA0*60)/60}*var(--hh));height:calc(${(t1-t0)/60}*var(--hh))"><b>${nomMat(k.cod)}</b><small>${etiquetaCom(k)}</small><small>${k.mod.toUpperCase()}</small><button class="hx" data-q="${id}" aria-label="Quitar ${nomMat(k.cod)}">×</button></div>`}).join('')+'</div>'});
- $('hgrid').innerHTML=h;nuevoId=null;
+  return`<div class="hb${flags.has(id+'#'+i)?' al':''}${id===nuevoId?' nuevo':''}${id===hSel&&MQM.matches?' sel':''}" data-b="${id}" style="top:calc(${(t0-HORA0*60)/60}*var(--hh));height:calc(${(t1-t0)/60}*var(--hh))"><b>${nomMat(k.cod)}</b><small>${etiquetaCom(k)}</small><small>${k.mod.toUpperCase()}</small><button class="hx" data-q="${id}" aria-label="Quitar ${nomMat(k.cod)}">×</button></div>`}).join('')+'</div>'});
+ $('hgrid').innerHTML=h;nuevoId=null;if(!est.hor.includes(hSel))hSel=null;detalleH();
  const ob=est.hor.map(id=>COM[id]).filter(k=>k.obs);
  $('hobs').innerHTML=ob.length?`<div class="hob"><h4>Observaciones</h4>${ob.map(k=>`<p><b>${nomMat(k.cod)} · ${etiquetaCom(k)}:</b> ${k.obs}</p>`).join('')}</div>`:'';
  $('hlist').innerHTML=est.hor.length?est.hor.map(id=>{const k=COM[id];return`<div class="hr2"><b>${nomMat(k.cod)}</b><span>${etiquetaCom(k)}</span><span>${k.tit||'—'}</span><span class="tg ${k.mod==='Promocional'?'pr':'rg'}">${k.mod}</span><button class="pbt" data-q="${id}">Quitar</button></div>`}).join(''):'<p class="vacio3">Todavía no agregaste ninguna comisión.</p>';
  $('dlHor').disabled=!est.hor.length}
-$('horarios').addEventListener('click',e=>{const q=e.target.closest('[data-q]');if(q)quitarCom(q.dataset.q)});
+let hSel=null; /* comisión tocada en la grilla (celular) */
+function detalleH(){const k=COM[hSel];
+ $('hdet').innerHTML=k?`<div class="hdc"><h4>${nomMat(k.cod)}</h4><p><i>Comisión</i>${etiquetaCom(k)} · ${k.mod}</p>${k.tit?`<p><i>Titular</i>${k.tit}</p>`:''}<p><i>Días y horarios</i>${textoDias(k)}</p><button class="pbt" data-q="${k.id}">Quitar</button></div>`:(est.hor.length?'<p class="vacio3">Tocá una comisión de la grilla para ver su detalle.</p>':'')}
+$('horarios').addEventListener('click',e=>{const q=e.target.closest('[data-q]');if(q){quitarCom(q.dataset.q);return}
+ const b=e.target.closest('.hb');if(b&&MQM.matches){hSel=b.dataset.b;pintarHorarios()}});
+/* Zoom de la grilla (mismo componente que el plan) */
+const hwEl=$('hw'),hsEl=$('hs');
+const ZH=mkZoom(hwEl,()=>$('hgrid').offsetWidth||760,aplicarH);
+function aplicarH(){const g=$('hgrid');if(!MQM.matches){hsEl.style.cssText='';g.style.transform='';return}
+ const s=ZH.cur();hsEl.style.width=g.offsetWidth*s+'px';hsEl.style.height=g.offsetHeight*s+'px';g.style.transform=`scale(${s})`}
+new ResizeObserver(aplicarH).observe(hwEl);
+(MQM.addEventListener?MQM.addEventListener('change',()=>{ajustar();aplicarH()}):MQM.addListener(()=>{ajustar();aplicarH()}));
+/* Controles de zoom, aviso de orientación y "¿Cómo funciona?" */
+document.addEventListener('click',e=>{const z=e.target.closest('.zt button');
+ if(z){const Z=z.parentNode.dataset.t==='p'?ZP:ZH,a=z.dataset.z;a==='0'?Z.ajustar():Z.paso(a==='+'?1.25:.8);return}
+ if(e.target.closest('.ori button')){document.documentElement.classList.add('oriOff');return}
+ const x=e.target.closest('.expb');if(x){const o=x.parentNode.classList.toggle('ab');x.setAttribute('aria-expanded',o)}});
 
 /* ===== Descarga como imagen: se dibuja en un canvas, sin librerías ni servidores ===== */
 const PAL={b:'#7C2C3B',v:'#1BB1E7',n:'#F5F1EC'},FF='"Inter Tight",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
@@ -1051,10 +1260,14 @@ function pintarAvance(){const s=Object.keys(POSICIONES).reduce((a,k)=>a+peso(k),
  const b=el.querySelector('.pista b');if(b)setTimeout(()=>b.style.transform=`scaleX(${p/100})`,40)}
 /* Navegación por scroll */
 const SECC={inicio:'inicio',fechas:'fechas',plan:'carrera',horarios:'horarios'};
-function ir(v){$(SECC[v]).scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})}
-function espia(){let a='inicio';for(const k in SECC)if($(SECC[k]).getBoundingClientRect().top<=140)a=k;document.querySelectorAll('.nv').forEach(b=>b.classList.toggle('on',b.dataset.v===a));const m=document.documentElement.scrollHeight-innerHeight,p=m>0?Math.min(1,Math.max(0,scrollY/m)):0;$('sb').firstElementChild.style.transform=`scaleY(${p})`}
+function ir(v){menu(false);$(SECC[v]).scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})}
+function espia(){let a='inicio';for(const k in SECC)if($(SECC[k]).getBoundingClientRect().top<=140)a=k;document.querySelectorAll('.nv').forEach(b=>b.classList.toggle('on',b.dataset.v===a));const m=document.documentElement.scrollHeight-innerHeight,p=m>0?Math.min(1,Math.max(0,scrollY/m)):0;$('sb').firstElementChild.style.setProperty('--sp',p)}
 addEventListener('scroll',espia,{passive:true});addEventListener('resize',espia);
 document.addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)ir(b.dataset.v)});
+/* Menú ☰ (celular) */
+function menu(a){const n=document.querySelector('nav'),b=$('mnBtn');n.classList.toggle('ab',a);b.setAttribute('aria-expanded',a);b.textContent=a?'✕':'☰'}
+$('mnBtn').addEventListener('click',()=>menu(!document.querySelector('nav').classList.contains('ab')));
+document.addEventListener('click',e=>{if(!e.target.closest('nav'))menu(false)});
 /* Botón "¿Qué materias puedo cursar?": no aprobada y todas sus correlativas aprobadas (incluye la regla del ciclo inicial) */
 const cursables=()=>Object.keys(D).filter(id=>{if(aprob(id))return false;const r=req(id);return r.ids.every(aprob)&&INI.filter(aprob).length>=r.n});
 function pintarCur(){const n=cursables().length,b=$('btnCur'),t=$('curT'),txt=modoCur?'Podés cursar estas materias':'¿No sabés qué materia podés cursar?';
@@ -1070,7 +1283,7 @@ document.querySelectorAll('.sr').forEach(el=>io.observe(el));io.observe(esc);
 /* ===== ARRANQUE (abre en el inicio) ===== */
 dibujar();pintar();prog(true);ajustar();
 new ResizeObserver(ajustar).observe(vista);new ResizeObserver(fit).observe(pan);
-tic();setInterval(tic,1000);pintarAvance();pintarCur();pintarHorarios();render(false);espia();
+tic();setInterval(tic,1000);pintarAvance();pintarCur();pintarHorarios();render(false);espia();aplicarH();
 </script>
 </body>
 </html>
