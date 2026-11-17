@@ -595,12 +595,37 @@ html.oriOff .ori{display:none}
  .pi{display:block;column-count:2;column-gap:18px;margin-right:52px}
  .pi>*{break-inside:avoid}
 }
+/* ===== Aviso destacado y actividades ===== */
+.aviso{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:6px 16px;flex-wrap:wrap;padding:10px 60px 10px 24px;background:rgba(27,177,231,.22);border-bottom:2px solid var(--bv);font-size:17px;line-height:1.35;text-align:center}
+.aviso[hidden]{display:none}
+.aviso a{color:var(--b);font-weight:700;text-decoration:underline;text-decoration-color:var(--bv);text-decoration-thickness:3px;text-underline-offset:3px}
+.aviso button{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;background:none;color:var(--b);font:400 30px/1 var(--f);cursor:pointer;touch-action:manipulation}
+#actividades{position:relative;z-index:1;padding:36px 28px 0}
+.actgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media(max-width:1100px){.actgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.act{display:flex;flex-direction:column;gap:8px;padding:18px;border-radius:20px;background:rgba(245,241,236,.8);border:2px solid rgba(124,44,59,.22)}
+.act h3{font-size:20px;line-height:1.2}
+.act .tg{align-self:flex-start}
+.act p{font-size:16px;line-height:1.4}
+.act p i{display:block;font-style:normal;font-size:12px;text-transform:uppercase;letter-spacing:.05em;opacity:.65}
+.act .pbt{margin-top:auto;align-self:flex-start}
+.act .aut{font-size:13px;opacity:.75;margin-top:4px}
+@media (max-width:768px), (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+ .aviso{font-size:16px;padding:10px max(56px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left))}
+ #actividades{padding:28px max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+ .actgrid{grid-template-columns:1fr;gap:12px}
+ .act{padding:14px 16px;border-radius:18px}
+ .act .pbt{width:100%;text-align:center;align-self:stretch}
+}
+.actual{font-size:13px;opacity:.75;margin:-10px 0 16px}
+@media(max-width:768px){.actual{margin:-6px 0 14px}}
 </style>
 </head>
 <body>
 <div class="fx" aria-hidden="true"><i></i><i></i><i></i></div>
-<nav><button class="br" data-v="inicio">Foja Cero</button><span class="sp"></span><div class="nvs"><button class="nv on" data-v="inicio">Inicio</button><button class="nv" data-v="fechas">Fechas importantes</button><button class="nv" data-v="plan">Mi carrera</button><button class="nv" data-v="horarios">Mis horarios</button></div><button class="mbtn" id="mnBtn" aria-label="Menú" aria-expanded="false">☰</button></nav>
+<nav><button class="br" data-v="inicio">Foja Cero</button><span class="sp"></span><div class="nvs"><button class="nv on" data-v="inicio">Inicio</button><button class="nv" data-v="fechas">Fechas importantes</button><button class="nv" data-v="actividades">Actividades</button><button class="nv" data-v="plan">Mi carrera</button><button class="nv" data-v="horarios">Mis horarios</button></div><button class="mbtn" id="mnBtn" aria-label="Menú" aria-expanded="false">☰</button></nav>
 <div id="sb" aria-hidden="true"><i></i></div>
+<div id="aviso" class="aviso" hidden></div>
 <section id="inicio"><div class="ini-w"><div class="hero">
  <h1 class="rv" style="--d:0ms">Foja Cero</h1>
  <p class="baj rv" style="--d:80ms">Todo lo que necesitás para informarte de la carrera<span class="nof">Sitio no oficial</span></p>
@@ -609,6 +634,7 @@ html.oriOff .ori{display:none}
 </div></div></section>
 <section id="fechas"><div class="ini-w">
  <h2 class="sr">Fechas importantes</h2>
+ <p class="actual sr" id="actualizado" hidden></p>
  <div class="fl sr"><div class="fcs" id="fcs"></div><div class="lks" id="lks"></div></div>
 </div></section>
 <section id="como"><div class="ini-w">
@@ -618,6 +644,11 @@ html.oriOff .ori{display:none}
   <div class="paso sr" style="--d:100ms"><b class="nn">2</b><h3>Mirá cuáles podés cursar</h3><p>Con las correlatividades cargadas, la página te muestra qué materias ya podés cursar.</p></div>
   <div class="paso sr" style="--d:200ms"><b class="nn">3</b><h3>Enterate de las fechas clave</h3><p>Inscripciones, reclamos y turnos de examen, con cuenta regresiva y accesos directos.</p></div>
  </div>
+</div></section>
+<section id="actividades"><div class="ini-w">
+ <h2 class="sr">Actividades</h2>
+ <p class="hsub sr">Charlas, paros, jornadas y otras actividades extracurriculares que tenés a mano para ir.</p>
+ <div class="actgrid sr" id="actgrid"></div>
 </div></section>
 <main id="carrera">
  <section class="izq">
@@ -647,7 +678,7 @@ html.oriOff .ori{display:none}
  <div id="hdet"></div>
  <div id="hobs"></div>
  <div id="hlist"></div>
- <p class="hnota">Estos horarios son los que se dictaron en los dos cuatrimestres de 2026 y pueden estar sujetos a cambios. Cuando se publiquen los horarios de 2027, se actualizarán. Confirmá siempre en el SIU Guaraní.</p>
+ <p class="hnota" id="hnota"></p>
 </div></section>
 <section class="priv"><div class="ini-w"><p class="sr">Foja Cero no te pide ningún dato. Tu avance se guarda solo en tu dispositivo.</p></div></section>
 <footer>Foja Cero es un sitio no oficial. No está asociado a la Facultad de Ciencias Jurídicas y Sociales ni a ninguna agrupación estudiantil. De estudiantes para estudiantes.</footer>
@@ -655,254 +686,333 @@ html.oriOff .ori{display:none}
 <div class="mod" id="mod" aria-hidden="false"><div class="mdl" role="dialog" aria-label="Elegir optativas"><div class="mh"><h3>Elegir optativas</h3><button class="mx" aria-label="Cerrar">×</button></div><p class="mc" id="mcont"></p><div class="ml" id="mlist"></div></div></div>
 <div class="mod m2" id="mod2"><div class="mdl" role="dialog" aria-label="Cátedras"><div class="mh"><h3 id="ctit">Cátedras</h3><button class="mx" aria-label="Cerrar">×</button></div><div class="ml" id="clist"></div></div></div>
 <div class="mod m3" id="mod3"><div class="mdl" role="dialog" aria-label="Tu imagen"><div class="mh"><h3>Tu imagen</h3><button class="mx" aria-label="Cerrar">×</button></div><p class="mc" id="prevH"></p><div class="ml pv"><img id="prevImg" alt="Imagen para compartir"></div><div class="pvb"><button class="pbt p" id="prevShare">Compartir</button><a class="pbt" id="prevDl">Descargar</a></div></div></div>
+<!-- ===== DATOS EDITABLES: bloques JSON delimitados (ver FORMATO DE DATOS). No cambiar las marcas FOJA:INICIO / FOJA:FIN ni los id. ===== -->
+<!-- FOJA:INICIO fechas -->
+<script type="application/json" id="datos-fechas">
+[
+{"id": "insc", "titulo": "Inscripción al turno de diciembre", "inicio": "2026-11-23T08:00-03:00", "fin": "2026-11-24T23:59-03:00", "textoSIU": "Para inscribirse"},
+{"id": "recl", "titulo": "Reclamos", "inicio": "2026-11-25T08:00-03:00", "fin": "2026-11-25T23:59-03:00", "textoSIU": "Para reclamos"},
+{"id": "turno", "titulo": "Turno de examen", "inicio": "2026-11-30T00:00-03:00", "fin": "2026-12-23T23:59-03:00", "textoSIU": ""}
+]
+</script>
+<!-- FOJA:FIN fechas -->
+<!-- FOJA:INICIO links -->
+<script type="application/json" id="datos-links">
+[
+{"id": "siu", "nombre": "SIU Guaraní", "url": "https://servicios.unl.edu.ar/guarani3/autogestion/", "textoChico": "", "usaTextoDeFechas": true},
+{"id": "bedelia", "nombre": "Bedelía 3.0", "url": "https://servicios.unl.edu.ar/bedeliamovil/jYruY", "textoChico": "¿En qué aula curso?", "usaTextoDeFechas": false},
+{"id": "aula", "nombre": "Aula Virtual", "url": "https://servicios.unl.edu.ar/aulavirtual/fcjs/login/index.php", "textoChico": "", "usaTextoDeFechas": false}
+]
+</script>
+<!-- FOJA:FIN links -->
+<!-- FOJA:INICIO aviso -->
+<script type="application/json" id="datos-aviso">
+{"activo": true, "texto": "Oficialmente Foja Cero está completa.", "enlace": "https://www.instagram.com/fcjs.unl/", "textoEnlace": "Instagram FCJS"}
+</script>
+<!-- FOJA:FIN aviso -->
+<!-- FOJA:INICIO actividades -->
+<script type="application/json" id="datos-actividades">
+[
+{"id": "a1", "titulo": "Nada", "organizador": "Organizo yo", "cuando": "Mañana", "fechaOrden": "", "requisitos": "Ninguno", "enlace": "https://www.instagram.com/fcjs.unl/", "textoEnlace": "prueba", "autor": "Yo", "visible": true}
+]
+</script>
+<!-- FOJA:FIN actividades -->
+<!-- FOJA:INICIO horarios -->
+<script type="application/json" id="datos-horarios">
+[
+{"codigo": "DC2", "catedra": "A", "comision": 1, "titular": "TIZÓN, Alejandro", "adjuntos": ["Lemos, Santiago", "Ardoy, Alejandro"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DC2", "catedra": "A", "comision": 2, "titular": "TIZÓN, Alejandro", "adjuntos": ["Lauría, Luciano", "Montefiori, Paula"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "20:00"}, {"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DC2", "catedra": "B", "comision": null, "titular": "ROSATTI, Emilio", "adjuntos": ["Lauría, Luciano"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "16:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DC2", "catedra": "C", "comision": null, "titular": "UBERTI, Mariela", "adjuntos": ["Daverio, Gustavo"], "modalidad": "Promocional", "bloques": [{"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}, {"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DC2", "catedra": "D", "comision": 1, "titular": "VICENTE, Roberto", "adjuntos": ["Suarez Faisal, Martín", "De Olazabal, Mariana", "García, Ximena", "Cabrera, Florencia"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}, {"dia": "Viernes", "inicio": "12:00", "fin": "14:00"}, {"dia": "Martes", "inicio": "12:00", "fin": "14:00"}], "observaciones": null},
+{"codigo": "DC2", "catedra": "D", "comision": 2, "titular": "VICENTE, Roberto", "adjuntos": ["García, Ximena", "Cabrera, Florencia", "Toso, Mauro"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}, {"dia": "Viernes", "inicio": "12:00", "fin": "14:00"}, {"dia": "Martes", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "FDP", "catedra": "A", "comision": null, "titular": "REYNA, Carlos", "adjuntos": ["Kilgelmann, Romina", "Sanchez, Sabrina"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "16:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "FDP", "catedra": "B", "comision": null, "titular": "LONGO, Patricio", "adjuntos": ["Coassin, Rina", "Scaglia, Agustín"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "FDP", "catedra": "C", "comision": null, "titular": "MOIA, Ángel", "adjuntos": ["Rodríguez Calderon, Cecilia", "Cerda, Marina"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "FDP", "catedra": "D", "comision": null, "titular": "FABIANO, Aidilio", "adjuntos": ["Valorzi, Francisco"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "FDP", "catedra": "E", "comision": null, "titular": "WAGNER, Claudia", "adjuntos": ["Rodríguez Calderon, Cecilia", "Depetris, Francisco", "Reyna, Rosario"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "08:00", "fin": "12:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DdO", "catedra": "A", "comision": null, "titular": "AGA, Javier", "adjuntos": ["Ferrer, Federico", "Berros, Valeria", "Barrilis, Natalia"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}, {"dia": "Lunes", "inicio": "08:00", "fin": "10:00"}, {"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DdO", "catedra": "B", "comision": null, "titular": "DELLAMONICA, Roberto", "adjuntos": ["Moro, Emilio", "Alderete, Walter"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "10:00", "fin": "14:00"}], "observaciones": null},
+{"codigo": "DdO", "catedra": "D", "comision": null, "titular": "SOZZO, Gonzalo", "adjuntos": ["Churruarín, Mariano", "Reyna, Carlos Alberto", "Fröschke, Frank"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DdC", "catedra": "C", "comision": 1, "titular": "WAGNER, Claudia", "adjuntos": ["Fröschke, Frank", "Gianfelici, Florencia", "Sabate, Martha"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "08:00", "fin": "12:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DdC", "catedra": "C", "comision": 2, "titular": "WAGNER, Claudia", "adjuntos": ["Fröschke, Frank", "Dos Santos Freire, Betania"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "08:00", "fin": "12:00"}, {"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DdC", "catedra": "D", "comision": null, "titular": "ALBORNOZ, Elena", "adjuntos": ["Pita, Martín", "Carbo Amoroso, Cecilia"], "modalidad": "Promocional", "bloques": [{"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DdC", "catedra": "E", "comision": null, "titular": "SOZZO, Gonzalo", "adjuntos": ["Bianchi, Elena", "Churruarín, Mariano"], "modalidad": "Promocional", "bloques": [{"dia": "Miércoles", "inicio": "16:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DCE", "catedra": "A", "comision": 1, "titular": "DARSAUT, M Victoria", "adjuntos": ["Rostan, Matías", "Paez, Juan", "Puyol, M Sara"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "14:00", "fin": "18:00"}, {"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DCE", "catedra": "A", "comision": 2, "titular": "WALKER DE TULER, M Cristina", "adjuntos": ["Romano, Rubén", "Somaglia, Gabriel"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "10:00", "fin": "12:00"}, {"dia": "Martes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Miércoles", "inicio": "10:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "DCE", "catedra": "C", "comision": null, "titular": "PIEDECASAS, Miguel", "adjuntos": ["Arrua, Carolina", "Cristoforato, Daniel"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "PJP", "catedra": "A", "comision": null, "titular": "SOMAGLIA, Gabriel", "adjuntos": ["Forchetti, Leandro", "Prono, Patricio"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "PJP", "catedra": "B", "comision": 1, "titular": "GOMEZ BAUSELA, María Silvia", "adjuntos": ["Prono, Javier", "Prono, Patricio"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "10:00", "fin": "14:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "PJP", "catedra": "B", "comision": 2, "titular": "GARCÍA, Marcelo", "adjuntos": ["Basualdo, María Eugenia", "Yódice, Alejandro"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "12:00", "fin": "14:00"}, {"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DITV", "catedra": "A", "comision": null, "titular": "DE CÉSARIS, María Cristina", "adjuntos": ["Basualdo, María Eugenia", "Prono, Josefina"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DITV", "catedra": "B", "comision": null, "titular": "PRONO, Mariano", "adjuntos": ["Basualdo, María Eugenia", "Moia, Ángel Luis"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "20:00"}, {"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DITV", "catedra": "C", "comision": null, "titular": "DE CÉSARIS, María Cristina", "adjuntos": ["Ardoy, M Victoria", "Prono, Javier"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DR", "catedra": "A", "comision": null, "titular": "DELLAMONICA, Roberto", "adjuntos": ["Scortechini, Cintia", "Bazzan, Guillermo"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "12:00", "fin": "14:00"}, {"dia": "Martes", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DR", "catedra": "B", "comision": null, "titular": "DAGUERRE, Luis", "adjuntos": ["Garelli, Pamela", "Sureda, Carlos", "Dallaglio, Juan C y otros"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DDF", "catedra": "A", "comision": null, "titular": "GALLI FIANT, María Magdalena", "adjuntos": ["Bay, Nahuel", "Gon, María Guadalupe"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DDF", "catedra": "B", "comision": null, "titular": "JÁUREGUI, Rodolfo", "adjuntos": ["Giulisasti, Jorgelina", "Basail, María del Valle", "Spina, Paula"], "modalidad": "Promocional", "bloques": [{"dia": "Viernes", "inicio": "18:00", "fin": "22:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": "Los viernes es una clase cada dos semanas."},
+{"codigo": "DDF", "catedra": "C", "comision": null, "titular": "GALLETTI, Judith", "adjuntos": ["Ramos, Rodolfo", "Cortés, Julio", "Murga, Eleonora"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "18:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": "La clase de los miércoles es sólo el primer miércoles del mes."},
+{"codigo": "DSuc", "catedra": "A", "comision": 1, "titular": "GUILISASTI, Jorgelina", "adjuntos": ["Barrilis, Carlos", "Balestra, Natalia"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "12:00", "fin": "14:00"}, {"dia": "Lunes", "inicio": "12:00", "fin": "14:00"}, {"dia": "Martes", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DSuc", "catedra": "A", "comision": 2, "titular": "GUILISASTI, Jorgelina", "adjuntos": ["Olivera, Javier", "Gutierrez Dalla Fontana, Esteban"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "12:00", "fin": "14:00"}, {"dia": "Lunes", "inicio": "12:00", "fin": "14:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DSuc", "catedra": "B", "comision": null, "titular": "GUASTAVINO, Gabriel", "adjuntos": ["Saez, Emiliano"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Lunes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DPG", "catedra": "B", "comision": 1, "titular": "OLAZABAL, Julio", "adjuntos": ["García Gastaldo, Ayelén", "Di Siena, Diego", "Feijoo, Marta"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}, {"dia": "Martes", "inicio": "12:00", "fin": "14:00"}, {"dia": "Jueves", "inicio": "12:00", "fin": "14:00"}], "observaciones": null},
+{"codigo": "DPG", "catedra": "B", "comision": 2, "titular": "OLAZABAL, Julio", "adjuntos": ["Feijoo, Marta", "Ríos, Leandro"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DPG", "catedra": "C", "comision": null, "titular": "ALVAREZ, Ricardo", "adjuntos": ["Goyeneche, Cecilia", "Alvarez, Lisandro", "Podhainy, Juan", "Amadeo, Sebastián"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}, {"dia": "Lunes", "inicio": "16:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DPG", "catedra": "D", "comision": null, "titular": "GARCÍA, Jorge", "adjuntos": ["Goyeneche, Cecilia", "Ríos, Leandro", "Canavese, Jonatan"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}, {"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DPG", "catedra": "E", "comision": null, "titular": "GEMIGNANI, Juan Carlos", "adjuntos": ["Dato, Leandro", "Corti, Lisandro"], "modalidad": "Regular", "bloques": [{"dia": "Sábado", "inicio": "08:00", "fin": "12:00"}, {"dia": "Miércoles", "inicio": "20:00", "fin": "22:00"}, {"dia": "Martes", "inicio": "14:00", "fin": "18:00"}], "observaciones": "Las clases de los martes son cada dos semanas."},
+{"codigo": "DPE", "catedra": "A", "comision": null, "titular": "OLAZABAL, Julio", "adjuntos": ["Di Siena, Diego", "Fiz, Cristian", "Biondi, María Eugenia", "Ferraro, Cristina", "Patrizi, Jorge"], "modalidad": "Regular", "bloques": [{"dia": "Martes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}, {"dia": "Lunes", "inicio": "20:00", "fin": "22:00"}, {"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DPE", "catedra": "B", "comision": null, "titular": "GARCÍA, Jorge", "adjuntos": ["Goyeneche, Cecilia"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}, {"dia": "Lunes", "inicio": "14:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DPE", "catedra": "C", "comision": null, "titular": "AMADEO, Sebastián", "adjuntos": ["Melia, Samanta", "Vazquez, Clara"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "20:00", "fin": "22:00"}, {"dia": "Lunes", "inicio": "20:00", "fin": "22:00"}, {"dia": "Miércoles", "inicio": "20:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "DC3", "catedra": "A", "comision": null, "titular": "VICENTE, Roberto", "adjuntos": ["Gimenez, Rocío", "Saini, Paula"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DC3", "catedra": "B", "comision": 1, "titular": "MOLINA, Adriana", "adjuntos": ["Stavole, Agustina"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "14:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DC3", "catedra": "B", "comision": 2, "titular": "MOLINA, Adriana", "adjuntos": ["Bisutti, Cesar"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "20:00"}], "observaciones": "Las clases de esta comisión son virtuales."},
+{"codigo": "DC3", "catedra": "C", "comision": null, "titular": "SUAREZ FAISAL, Martín", "adjuntos": ["Stavole, Agustina"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "14:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "TDP", "catedra": "A", "comision": null, "titular": "ROSSI GERARD, Lucila", "adjuntos": ["Saxer, Andrea"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "12:00", "fin": "14:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "TDP", "catedra": "B", "comision": null, "titular": "AVERO, Sergio", "adjuntos": ["Sedlacek, Federico"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "10:00", "fin": "12:00"}, {"dia": "Viernes", "inicio": "10:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "TDP", "catedra": "C", "comision": null, "titular": "SEDLACEK, Federico", "adjuntos": ["Ramirez Amable, Valentina"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "16:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "TDP", "catedra": "D", "comision": null, "titular": "GARROTE, Angel", "adjuntos": ["Rossi Gerard, Lucila"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "10:00", "fin": "14:00"}], "observaciones": null},
+{"codigo": "DPA", "catedra": "C", "comision": null, "titular": "VARGAS, Abraham", "adjuntos": ["Piana, Liliana", "Barucca, Mario", "Sedlacek, Federico"], "modalidad": "Regular", "bloques": [{"dia": "Martes", "inicio": "18:00", "fin": "22:00"}, {"dia": "Miércoles", "inicio": "20:00", "fin": "22:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DPA", "catedra": "B", "comision": null, "titular": "AVERO, Sergio", "adjuntos": ["Bermudez, Claudio", "Hojman, Pablo", "Tobares, Dante"], "modalidad": "Promocional", "bloques": [{"dia": "Viernes", "inicio": "08:00", "fin": "10:00"}, {"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "20:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "DPA", "catedra": "D", "comision": null, "titular": "RIOS, Gustavo", "adjuntos": ["Cecchini, Ignacio", "Tobares, Dante"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "18:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DPP", "catedra": "A", "comision": null, "titular": "COCOCCIONI, Pablo", "adjuntos": ["Tallarico, Hector", "Patrizi, Jorge"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DPP", "catedra": "B", "comision": null, "titular": "BARLETTA, Mario", "adjuntos": ["Saux, Santiago", "Neffen, Juan Manuel", "Broggi Forclaz, Matías Alberto", "Grimberg, Federico"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DPP", "catedra": "D", "comision": null, "titular": "OLIVA, Juan Manuel", "adjuntos": ["Drivet, Matías", "Balangione, Jaquelina"], "modalidad": "Regular", "bloques": [{"dia": "Viernes", "inicio": "14:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DdT", "catedra": "A", "comision": 1, "titular": "DE PETRE, Patricia", "adjuntos": ["Coppoleta, Sebastián", "Vigo, Consuelo", "De Manuele, Abel"], "modalidad": "Regular", "bloques": [{"dia": "Viernes", "inicio": "08:00", "fin": "10:00"}, {"dia": "Viernes", "inicio": "12:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DdT", "catedra": "A", "comision": 2, "titular": "DE MANUELE, Abel", "adjuntos": ["Abramovich, Andrés", "Pussineri, Pedro Sebastián"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}, {"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}, {"dia": "Viernes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DdT", "catedra": "B", "comision": null, "titular": "CANTARD, Albor", "adjuntos": ["Condal, Lucila", "Azario, Malena"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DAg", "catedra": "A", "comision": null, "titular": "MAIZTEGUI, Horacio", "adjuntos": ["Castro, Alejandra"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "18:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "DAg", "catedra": "B", "comision": null, "titular": "BERMUDEZ, Claudio", "adjuntos": ["Spano, Lucena"], "modalidad": "Promocional", "bloques": [{"dia": "Miércoles", "inicio": "18:00", "fin": "22:00"}, {"dia": "Viernes", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DIPriv", "catedra": "A", "comision": null, "titular": "GIMENEZ CORTE, Cristian", "adjuntos": ["Filippon, Carolina", "Benitez, Juan Francisco"], "modalidad": "Regular", "bloques": [{"dia": "Martes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "DIPriv", "catedra": "B", "comision": null, "titular": "ALL, Paula", "adjuntos": ["Wegher Osci, Florencia"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "10:00", "fin": "14:00"}, {"dia": "Miércoles", "inicio": "10:00", "fin": "12:00"}, {"dia": "Jueves", "inicio": "12:00", "fin": "14:00"}], "observaciones": "Las clases de los miércoles son cada dos semanas."},
+{"codigo": "DIPriv", "catedra": "C", "comision": null, "titular": "GIMENEZ CORTE, Cristian", "adjuntos": ["Chiuchquievich, Adriana"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}], "observaciones": "Esta comisión es de cursado virtual."},
+{"codigo": "DSS", "catedra": "A", "comision": null, "titular": "COCERES, Celeste", "adjuntos": ["Martin, Juan"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": "Esta comisión es de cursado virtual."},
+{"codigo": "DSS", "catedra": "B", "comision": null, "titular": "DE PETRE, Patricia", "adjuntos": ["Gazzo, María Virginia"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DA", "catedra": "A", "comision": null, "titular": "REYNA, Justo", "adjuntos": ["Weder, Rubén Luis", "Peñalva, Gerónimo", "Lucía, Adrián", "Berta, Victor"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DA", "catedra": "B", "comision": null, "titular": "LISA, Federico", "adjuntos": ["Vigo, Consuelo", "Migno, Mario Gabriel", "Molinas, Nicanor", "Passarella, Julián"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Martes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DA", "catedra": "C", "comision": null, "titular": "GAGGIAMO, Esteban", "adjuntos": ["Mantica, Luis", "Molinari, Miguel", "Peñalva, Gerónimo"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "20:00", "fin": "22:00"}, {"dia": "Martes", "inicio": "20:00", "fin": "22:00"}, {"dia": "Miércoles", "inicio": "20:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "DIP", "catedra": "A", "comision": null, "titular": "MARCIONNI, Nelson Daniel", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "16:00", "fin": "20:00"}, {"dia": "Viernes", "inicio": "12:00", "fin": "16:00"}], "observaciones": "Esta comisión es de cursado virtual."},
+{"codigo": "DIP", "catedra": "B", "comision": null, "titular": "DÍAZ, Claudio", "adjuntos": ["Sciolla, Vanina", "Yermanos, José"], "modalidad": "Regular", "bloques": [{"dia": "Martes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}, {"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DIP", "catedra": "C", "comision": null, "titular": "DEGIORGIO, Selva", "adjuntos": ["Coronel, Germán", "Albarracín, Gabriel"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Martes", "inicio": "14:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DT", "catedra": "A", "comision": null, "titular": "FOLCO, Carlos María", "adjuntos": ["Achleitner, Gerardo"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "18:00", "fin": "22:00"}, {"dia": "Lunes", "inicio": "20:00", "fin": "22:00"}], "observaciones": "Esta comisión es de cursado virtual."},
+{"codigo": "DT", "catedra": "B", "comision": null, "titular": "ROMERO ACUÑA, Roberto", "adjuntos": ["Rivero, Francisco"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "20:00", "fin": "22:00"}, {"dia": "Miércoles", "inicio": "20:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "DT", "catedra": "C", "comision": null, "titular": "REZZOAGLI, Luciano", "adjuntos": ["Bazza, Alcides"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}, {"dia": "Martes", "inicio": "12:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DCon", "catedra": "A", "comision": null, "titular": "BIANCHI, Lorena", "adjuntos": ["Sozzo, Gonzalo", "Bevilacqua, Jimena"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "10:00", "fin": "14:00"}], "observaciones": null},
+{"codigo": "DCon", "catedra": "B", "comision": null, "titular": "CHURRUARIN, Mariano", "adjuntos": ["Clement, María Florencia", "Sozzo, Gonzalo"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "12:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DAmb", "catedra": "A", "comision": 1, "titular": "SANCHEZ IZQUIERDO, Pedro", "adjuntos": ["De Greef, Pablo", "Gottardi, María Luciana", "D'Amico, Germán"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "DAmb", "catedra": "A", "comision": 2, "titular": "SANCHEZ IZQUIERDO, Pedro", "adjuntos": ["De Greef, Pablo", "Gottardi, María Luciana", "D'Amico, Germán"], "modalidad": "Regular", "bloques": [{"dia": "Jueves", "inicio": "12:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "SYD", "catedra": "B", "comision": null, "titular": "BERROS, Valeria", "adjuntos": ["Haidar, Victoria", "Franco, Dabel"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "10:00", "fin": "14:00"}], "observaciones": null},
+{"codigo": "SYD", "catedra": "D", "comision": 1, "titular": "SOZZO, Máximo", "adjuntos": ["Montero, Augusto", "Actis, Alejandro"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "SYD", "catedra": "D", "comision": 2, "titular": "SOZZO, Máximo", "adjuntos": ["Montero, Augusto", "Claus, Waldemar"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "SYD", "catedra": "D", "comision": 3, "titular": "SOZZO, Máximo", "adjuntos": ["Gonzalez, Gustavo", "Ferreccio, Vanina"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "12:00", "fin": "14:00"}], "observaciones": null},
+{"codigo": "SYD", "catedra": "D", "comision": 4, "titular": "SOZZO, Máximo", "adjuntos": ["Somaglia, Maialen"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "FD", "catedra": "A", "comision": null, "titular": "MARICHAL, María Eugenia", "adjuntos": ["Coppoleta, Sebastián"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "FD", "catedra": "B", "comision": null, "titular": "SODERO, Eduardo", "adjuntos": [], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "18:00", "fin": "22:00"}], "observaciones": "Esta materia es de cursado híbrido. Alterna entre virtual y presencial."},
+{"codigo": "FD", "catedra": "C", "comision": null, "titular": "BARRAGUIRRE, Jorge", "adjuntos": ["Munne, Guillermo", "Busaniche, Mateo"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}, {"dia": "Martes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DC1", "catedra": "A", "comision": 2, "titular": "VICENTE, Roberto", "adjuntos": ["De Olazabal, Mariana", "Toso, Mauro"], "modalidad": "Promocional", "bloques": [{"dia": "Viernes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "DC1", "catedra": "C", "comision": null, "titular": "BERTONA, Mariana", "adjuntos": ["Botto, Romina"], "modalidad": "Promocional", "bloques": [{"dia": "Viernes", "inicio": "12:00", "fin": "14:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": "Esta materia es exclusiva para recursantes."},
+{"codigo": "TD", "catedra": "A", "comision": null, "titular": "FESSIA, Ricardo", "adjuntos": ["Reigert, Ivana", "Tomas, Verónica"], "modalidad": "Promocional", "bloques": [{"dia": "Viernes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}, {"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "TD", "catedra": "B", "comision": 2, "titular": "RODRIGUEZ BERTONI, María Jesús", "adjuntos": ["Ferreyra, Emanuel Andrés", "Perin, Alejandra"], "modalidad": "Promocional", "bloques": [{"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}, {"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Jueves", "inicio": "16:00", "fin": "18:00"}], "observaciones": "Esta materia es exclusiva para recursantes."},
+{"codigo": "HIA", "catedra": "A", "comision": 1, "titular": "FERNANDEZ, Jorge Raúl", "adjuntos": ["Fernandez, Jorge Andrés", "Grandinetti, Viviana"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "08:00", "fin": "10:00"}, {"dia": "Viernes", "inicio": "08:00", "fin": "10:00"}], "observaciones": "Esta materia es exclusiva para recursantes."},
+{"codigo": "HIA", "catedra": "A", "comision": 3, "titular": "FERNANDEZ, Jorge Raúl", "adjuntos": ["Rodriguez Duch, Martín", "Fernandez, Federico"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "18:00", "fin": "22:00"}, {"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "HIA", "catedra": "B", "comision": 4, "titular": "BOLCATTO, Viviana", "adjuntos": ["Bertero, Eliana", "Salomon, Pablo"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "10:00", "fin": "12:00"}, {"dia": "Martes", "inicio": "08:00", "fin": "10:00"}], "observaciones": null},
+{"codigo": "CP", "catedra": "A", "comision": 1, "titular": "FERRER, Magín", "adjuntos": ["Tarragona, Gustavo", "Spinelli, Javier", "García, Ivana"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "20:00", "fin": "22:00"}, {"dia": "Martes", "inicio": "20:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "CP", "catedra": "A", "comision": 4, "titular": "FERRER, Magín", "adjuntos": ["Tarragona, Gustavo", "Spinelli, Javier"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "20:00", "fin": "22:00"}, {"dia": "Jueves", "inicio": "20:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "CP", "catedra": "A", "comision": 6, "titular": "FERRER, Magín", "adjuntos": ["Tarragona, Gustavo", "Spinelli, Javier"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "20:00", "fin": "22:00"}, {"dia": "Jueves", "inicio": "20:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "CP", "catedra": "B", "comision": 2, "titular": "MANEIRO, Julián", "adjuntos": ["Maidana, Fanny", "Garcia, Ivana"], "modalidad": "Promocional", "bloques": [{"dia": "Viernes", "inicio": "12:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "PC", "catedra": "A", "comision": 1, "titular": "NIEL, Luis Ignacio", "adjuntos": ["Alles, Nicolás"], "modalidad": "Regular", "bloques": [{"dia": "Martes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "08:00", "fin": "10:00"}], "observaciones": null},
+{"codigo": "PC", "catedra": "C", "comision": 3, "titular": "GALETTO, Gerardo", "adjuntos": ["Alles, Nicolás"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "10:00", "fin": "12:00"}, {"dia": "Viernes", "inicio": "10:00", "fin": "12:00"}], "observaciones": "Esta materia es exclusiva para recursantes."},
+{"codigo": "PC", "catedra": "C", "comision": 4, "titular": "GALETTO, Gerardo", "adjuntos": ["Galanzino, Marianela", "Caceres, Martin"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "08:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "EP", "catedra": "A", "comision": 1, "titular": "DEMONTE, Norberto", "adjuntos": ["Forchetti, Leandro"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Miércoles", "inicio": "10:00", "fin": "12:00"}], "observaciones": "Esta materia es exclusiva para recursantes."},
+{"codigo": "EP", "catedra": "B", "comision": 4, "titular": "TEALDO, Julio", "adjuntos": ["Lozeco, Julio"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Jueves", "inicio": "10:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "EP", "catedra": "C", "comision": 2, "titular": "REINOSO, Ricardo Manuel", "adjuntos": ["Sotto, Orlando"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "16:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "O01", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Tealdo, Julio", "Lozeco, Julio", "Sotto, Orlando", "Enrique, Emiliano"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "O02", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Fessia, Ricardo", "Amsier, Eric"], "modalidad": "Regular", "bloques": [{"dia": "Viernes", "inicio": "14:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "O03", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Ruda, Elina"], "modalidad": "Regular", "bloques": [{"dia": "Viernes", "inicio": "14:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "O04", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Di Giuseppe, Salomé", "Gallo, Paula"], "modalidad": "Promocional", "bloques": [{"dia": "Miércoles", "inicio": "08:00", "fin": "10:00"}], "observaciones": "También son parte de la evaluación las actividades del aula virtual."},
+{"codigo": "O05", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Mántica, Luis"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "08:00", "fin": "10:00"}, {"dia": "Miércoles", "inicio": "08:00", "fin": "10:00"}], "observaciones": null},
+{"codigo": "O06", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Levin, Claudia", "Pivetta, José", "Lemos, Agustín"], "modalidad": "Regular", "bloques": [{"dia": "Sábado", "inicio": "08:00", "fin": "12:00"}, {"dia": "Martes", "inicio": "16:00", "fin": "18:00"}], "observaciones": "Las clases de los sábados son cada dos semanas y la de los martes se dicta una vez al mes."},
+{"codigo": "O23", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Sozzo, Máximo", "Claus, Waldemar"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Martes", "inicio": "10:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "O08", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Piedecasas, Miguel", "Lucía, Adrián", "Rodelli, Florencia"], "modalidad": "Promocional", "bloques": [{"dia": "Jueves", "inicio": "18:00", "fin": "22:00"}], "observaciones": null},
+{"codigo": "O09", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Romano, Ruben"], "modalidad": "Regular", "bloques": [{"dia": "Miércoles", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "O10", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Lemos, Santiago", "Lemos, Agustín"], "modalidad": "Regular", "bloques": [{"dia": "Martes", "inicio": "16:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "O11", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Spina, Laura", "Fumis, Federico"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "O12", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Hoet, Mariano"], "modalidad": "Regular", "bloques": [{"dia": "Viernes", "inicio": "16:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "O13", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Tealdo, Julio", "Sidler, Joel"], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "09:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "O14", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Wagner, Claudia", "Puyol, Sara", "Darsaut, M Victoria", "Rostan, Matías", "Gianfelici, María Florencia"], "modalidad": "Regular", "bloques": [{"dia": "Lunes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "O15", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Tizon, Alejandro", "Montefiori, Paula", "Caceres, Martín"], "modalidad": "Regular", "bloques": [{"dia": "Martes", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "O16", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Barranco, Graciela"], "modalidad": "Regular", "bloques": [{"dia": "Martes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Jueves", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "O22", "catedra": null, "comision": null, "titular": null, "adjuntos": ["Magnin, Juan Pablo"], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "12:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "I01", "catedra": "A", "comision": null, "titular": "GALLO, Paula", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Miércoles", "inicio": "10:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "I01", "catedra": "B", "comision": 1, "titular": "PETEAN, Verónica", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Miércoles", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "I01", "catedra": "B", "comision": 2, "titular": "DAGA, Carolina", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "14:00", "fin": "16:00"}, {"dia": "Viernes", "inicio": "14:00", "fin": "16:00"}], "observaciones": null},
+{"codigo": "I01", "catedra": "C", "comision": null, "titular": "DAGA, Carolina", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Viernes", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "I02", "catedra": "A", "comision": null, "titular": "DI GIUSEPPE, Salomé", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "08:00", "fin": "10:00"}, {"dia": "Jueves", "inicio": "08:00", "fin": "10:00"}], "observaciones": "Esta materia es de cursado virtual."},
+{"codigo": "I02", "catedra": "B", "comision": null, "titular": "GAUNA, Constanza", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Jueves", "inicio": "10:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "I02", "catedra": "C", "comision": null, "titular": "PETEAN, Verónica", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "16:00", "fin": "18:00"}, {"dia": "Miércoles", "inicio": "16:00", "fin": "18:00"}], "observaciones": null},
+{"codigo": "I03", "catedra": "A", "comision": null, "titular": "FERNANDEZ, Marisol", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "I04", "catedra": "A", "comision": null, "titular": "FERNANDEZ, Marisol", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "18:00", "fin": "20:00"}, {"dia": "Jueves", "inicio": "18:00", "fin": "20:00"}], "observaciones": null},
+{"codigo": "I05", "catedra": "A", "comision": null, "titular": "BIANCHI, Martha", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "08:00", "fin": "10:00"}, {"dia": "Jueves", "inicio": "08:00", "fin": "10:00"}], "observaciones": null},
+{"codigo": "I06", "catedra": "A", "comision": null, "titular": "BIANCHI, Martha", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Lunes", "inicio": "08:00", "fin": "10:00"}, {"dia": "Jueves", "inicio": "08:00", "fin": "10:00"}], "observaciones": null},
+{"codigo": "I07", "catedra": "A", "comision": null, "titular": "LÓPEZ, Sandra", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Jueves", "inicio": "10:00", "fin": "12:00"}], "observaciones": null},
+{"codigo": "I08", "catedra": "A", "comision": null, "titular": "LÓPEZ, Sandra", "adjuntos": [], "modalidad": "Promocional", "bloques": [{"dia": "Martes", "inicio": "10:00", "fin": "12:00"}, {"dia": "Jueves", "inicio": "10:00", "fin": "12:00"}], "observaciones": null}
+]
+</script>
+<!-- FOJA:FIN horarios -->
+<!-- FOJA:INICIO plan -->
+<script type="application/json" id="datos-plan">
+[
+{"codigo": "PC", "nombre": "Problemática del Conocimiento", "etiqueta": "Problemática del Conocimiento", "anio": "1er año", "ciclo": "Ciclo inicial", "correlativas": [], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 43, "y": 55, "ancho": 290, "alto": 103},
+{"codigo": "HIA", "nombre": "Historia Institucional Argentina", "etiqueta": "Historia Institucional Argentina", "anio": "1er año", "ciclo": "Ciclo inicial", "correlativas": [], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 353, "y": 55, "ancho": 290, "alto": 103},
+{"codigo": "DC1", "nombre": "Derecho Constitucional I", "etiqueta": "Derecho Constitucional I", "anio": "1er año", "ciclo": "Ciclo inicial", "correlativas": [], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 654, "y": 55, "ancho": 290, "alto": 103},
+{"codigo": "TD", "nombre": "Teoría del Derecho", "etiqueta": "Teoría del Derecho", "anio": "1er año", "ciclo": "Ciclo inicial", "correlativas": [], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 965, "y": 55, "ancho": 290, "alto": 103},
+{"codigo": "EP", "nombre": "Economía Política", "etiqueta": "Economía Política", "anio": "1er año", "ciclo": "Ciclo inicial", "correlativas": [], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 1276, "y": 55, "ancho": 290, "alto": 103},
+{"codigo": "CP", "nombre": "Ciencia Política", "etiqueta": "Ciencia Política", "anio": "1er año", "ciclo": "Ciclo inicial", "correlativas": [], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 1577, "y": 55, "ancho": 290, "alto": 103},
+{"codigo": "FDP", "nombre": "Fundamentos del Derecho Privado", "etiqueta": "Fundamentos del Derecho Privado", "anio": "2do año", "ciclo": "Ciclo inicial", "correlativas": ["TD"], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 1186, "y": 183, "ancho": 290, "alto": 103},
+{"codigo": "SYD", "nombre": "Sociología y Derecho", "etiqueta": "Sociología y Derecho", "anio": "2do año", "ciclo": "Ciclo inicial", "correlativas": [], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 1526, "y": 183, "ancho": 290, "alto": 103},
+{"codigo": "TDP", "nombre": "Teoría del Derecho Procesal", "etiqueta": "Teoría del Derecho Procesal", "anio": "2do año", "ciclo": "Ciclo inicial", "correlativas": ["DC1", "FDP"], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 851, "y": 183, "ancho": 290, "alto": 103},
+{"codigo": "DC2", "nombre": "Derecho Constitucional II", "etiqueta": "Derecho Constitucional II", "anio": "2do año", "ciclo": "Ciclo inicial", "correlativas": ["DC1", "TD"], "materiasCicloInicial": 0, "tipo": "Obligatorio", "x": 499, "y": 183, "ancho": 290, "alto": 103},
+{"codigo": "DPG", "nombre": "Derecho Penal Parte General", "etiqueta": "Derecho Penal Parte General", "anio": "3er año", "ciclo": "Ciclo superior", "correlativas": ["DC2"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 626, "y": 311, "ancho": 290, "alto": 103},
+{"codigo": "DdO", "nombre": "Derecho de Obligaciones", "etiqueta": "Derecho de Obligaciones", "anio": "3er año", "ciclo": "Ciclo superior", "correlativas": ["FDP"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1250, "y": 311, "ancho": 290, "alto": 103},
+{"codigo": "DC3", "nombre": "Derecho Constitucional III", "etiqueta": "Derecho Constitucional III", "anio": "3er año", "ciclo": "Ciclo superior", "correlativas": ["DC2"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 147, "y": 183, "ancho": 290, "alto": 103},
+{"codigo": "DdC", "nombre": "Derecho de los Contratos", "etiqueta": "Derecho de Contratos", "anio": "3er año", "ciclo": "Ciclo superior", "correlativas": ["DdO"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1265, "y": 439, "ancho": 290, "alto": 103},
+{"codigo": "DA", "nombre": "Derecho Administrativo", "etiqueta": "Derecho Administrativo", "anio": "3er año", "ciclo": "Ciclo superior", "correlativas": ["FDP", "DC1"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 948, "y": 311, "ancho": 290, "alto": 103},
+{"codigo": "DAg", "nombre": "Derecho Agrario", "etiqueta": "Derecho Agrario", "anio": "3er año", "ciclo": "Ciclo superior", "correlativas": ["FDP"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1578, "y": 311, "ancho": 290, "alto": 103},
+{"codigo": "DIP", "nombre": "Derecho Internacional Público", "etiqueta": "Derecho Internacional Público", "anio": "3er año", "ciclo": "Ciclo superior", "correlativas": ["DC3"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1, "y": 439, "ancho": 290, "alto": 103},
+{"codigo": "DDF", "nombre": "Derecho de Familia", "etiqueta": "Derecho de Familia", "anio": "4to año", "ciclo": "Ciclo superior", "correlativas": ["DdO"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 957, "y": 439, "ancho": 290, "alto": 103},
+{"codigo": "DPA", "nombre": "Derecho Procesal Aplicado", "etiqueta": "Derecho Procesal Aplicado", "anio": "4to año", "ciclo": "Ciclo superior", "correlativas": ["TDP"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 836, "y": 567, "ancho": 290, "alto": 103},
+{"codigo": "DPE", "nombre": "Derecho Penal Parte Especial", "etiqueta": "Derecho Penal Parte Especial", "anio": "4to año", "ciclo": "Ciclo superior", "correlativas": ["DPG"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 619, "y": 439, "ancho": 290, "alto": 103},
+{"codigo": "DCE", "nombre": "Derecho Comercial y Empresarial", "etiqueta": "Derecho Comercial y Empresarial", "anio": "4to año", "ciclo": "Ciclo superior", "correlativas": ["DdC"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1198, "y": 695, "ancho": 290, "alto": 103},
+{"codigo": "PJP", "nombre": "Personas Jurídicas Privadas", "etiqueta": "Personas Jurídicas Privadas", "anio": "4to año", "ciclo": "Ciclo superior", "correlativas": ["DCE"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1568, "y": 695, "ancho": 290, "alto": 103},
+{"codigo": "DR", "nombre": "Derechos Reales", "etiqueta": "Derechos Reales", "anio": "4to año", "ciclo": "Ciclo superior", "correlativas": ["DdC"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1526, "y": 567, "ancho": 290, "alto": 103},
+{"codigo": "DT", "nombre": "Derecho Tributario", "etiqueta": "Finanzas Públicas y Derecho Tributario", "anio": "4to año", "ciclo": "Ciclo superior", "correlativas": ["DC2"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 315, "y": 311, "ancho": 290, "alto": 103},
+{"codigo": "DITV", "nombre": "Derecho de la Insolvencia y Títulos Valores", "etiqueta": "Derecho de la Insolvencia y los Títulos Valores", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["PJP"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1526, "y": 823, "ancho": 331, "alto": 103},
+{"codigo": "DSuc", "nombre": "Derecho Sucesorio", "etiqueta": "Derecho Sucesorio", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DDF", "DR"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1198, "y": 823, "ancho": 290, "alto": 103},
+{"codigo": "DCon", "nombre": "Derecho del Consumidor", "etiqueta": "Derecho del Consumidor", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DC2", "DdC"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 705, "y": 695, "ancho": 290, "alto": 103},
+{"codigo": "DdT", "nombre": "Derecho del Trabajo", "etiqueta": "Derecho del Trabajo", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DdC"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1144, "y": 567, "ancho": 290, "alto": 103},
+{"codigo": "DPP", "nombre": "Derecho Procesal Penal", "etiqueta": "Derecho Procesal Penal", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DPE"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 517, "y": 567, "ancho": 290, "alto": 103},
+{"codigo": "FD", "nombre": "Filosofía del Derecho", "etiqueta": "Filosofía del Derecho", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DC3", "PC"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1, "y": 311, "ancho": 290, "alto": 103},
+{"codigo": "DSS", "nombre": "Derecho de la Seguridad Social", "etiqueta": "Derecho de la Seguridad Social", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DA"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 312, "y": 439, "ancho": 290, "alto": 103},
+{"codigo": "DIPriv", "nombre": "Derecho Internacional Privado", "etiqueta": "Derecho Internacional Privado", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DSuc", "DITV"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1457, "y": 951, "ancho": 290, "alto": 103},
+{"codigo": "DAmb", "nombre": "Derecho Ambiental", "etiqueta": "Derecho Ambiental", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DdO"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 1591, "y": 439, "ancho": 290, "alto": 103},
+{"codigo": "PPF", "nombre": "Práctica Profesional Final", "etiqueta": "Práctica Profesional Final", "anio": "5to año", "ciclo": "Ciclo superior", "correlativas": ["DA", "DDF", "DdT", "DPA", "DPP"], "materiasCicloInicial": 6, "tipo": "Obligatorio", "x": 800, "y": 845, "ancho": 290, "alto": 103},
+{"codigo": "IDI", "tarjeta": true, "etiqueta": "Idioma Extranjero", "x": 189, "y": 951, "ancho": 290, "alto": 103},
+{"codigo": "OYE", "tarjeta": true, "etiqueta": "Optativas y electivas", "x": 43, "y": 695, "ancho": 617, "alto": 230}
+]
+</script>
+<!-- FOJA:FIN plan -->
+<!-- FOJA:INICIO optativas -->
+<script type="application/json" id="datos-optativas">
+[
+{"id": "O01", "nombre": "Economía Social y Solidaria", "tipo": "Optativa", "horas": 60, "correlativas": ["EP", "CP", "HIA"], "minimoMateriasAprobadas": 6},
+{"id": "O02", "nombre": "Historia del Derecho", "tipo": "Optativa", "horas": 60, "correlativas": ["TD", "HIA", "DC1"], "minimoMateriasAprobadas": 6},
+{"id": "O03", "nombre": "Negociación y Mediación", "tipo": "Optativa", "horas": 60, "correlativas": ["DdC", "DPA"], "minimoMateriasAprobadas": 6},
+{"id": "O04", "nombre": "Inglés para las Ciencias Jurídicas", "tipo": "Optativa", "horas": 60, "correlativas": ["ING"], "minimoMateriasAprobadas": 6},
+{"id": "O05", "nombre": "Derecho Universitario", "tipo": "Optativa", "horas": 60, "correlativas": ["DC1"], "minimoMateriasAprobadas": 6},
+{"id": "O06", "nombre": "Capacitación Judicial - Selección y remoción de magistrados", "tipo": "Optativa", "horas": 60, "correlativas": ["DC2"], "minimoMateriasAprobadas": 6},
+{"id": "O07", "nombre": "Introducción al Análisis Criminal", "tipo": "Optativa", "horas": 60, "correlativas": ["DPG", "SYD"], "minimoMateriasAprobadas": 6},
+{"id": "O08", "nombre": "Derecho de Tránsito", "tipo": "Optativa", "horas": 60, "correlativas": ["DdO", "DPG"], "minimoMateriasAprobadas": 6},
+{"id": "O09", "nombre": "Derecho del Deporte", "tipo": "Optativa", "horas": 30, "correlativas": ["DdO", "TDP"], "minimoMateriasAprobadas": 6},
+{"id": "O10", "nombre": "Derecho Parlamentario", "tipo": "Optativa", "horas": 60, "correlativas": ["DC2"], "minimoMateriasAprobadas": 6},
+{"id": "O11", "nombre": "Entornos Digitales y Persecución Penal", "tipo": "Optativa", "horas": 30, "correlativas": [], "minimoMateriasAprobadas": 6},
+{"id": "O12", "nombre": "Seguridad Ciudadana", "tipo": "Optativa", "horas": 60, "correlativas": [], "minimoMateriasAprobadas": 6},
+{"id": "O13", "nombre": "Globalización y desarrollo", "tipo": "Optativa", "horas": 60, "correlativas": ["DC2", "EP"], "minimoMateriasAprobadas": 6},
+{"id": "O14", "nombre": "Derecho digital y tecnologías disruptivas", "tipo": "Optativa", "horas": 60, "correlativas": ["DdC"], "minimoMateriasAprobadas": 6},
+{"id": "O15", "nombre": "Ejecución Penal", "tipo": "Optativa", "horas": 30, "correlativas": ["DC2", "DPG"], "minimoMateriasAprobadas": 6},
+{"id": "O16", "nombre": "Teoría de la Argumentación", "tipo": "Optativa", "horas": 60, "correlativas": [], "minimoMateriasAprobadas": 6},
+{"id": "I01", "nombre": "Inglés I", "tipo": "Idioma", "horas": null, "correlativas": [], "minimoMateriasAprobadas": null, "idioma": "ING", "nivel": "1"},
+{"id": "I02", "nombre": "Inglés II", "tipo": "Idioma", "horas": null, "correlativas": ["I01"], "minimoMateriasAprobadas": null, "idioma": "ING", "nivel": "2"},
+{"id": "I03", "nombre": "Italiano I", "tipo": "Idioma", "horas": null, "correlativas": [], "minimoMateriasAprobadas": null, "idioma": "ITA", "nivel": "1"},
+{"id": "I04", "nombre": "Italiano II", "tipo": "Idioma", "horas": null, "correlativas": ["I03"], "minimoMateriasAprobadas": null, "idioma": "ITA", "nivel": "2"},
+{"id": "I05", "nombre": "Alemán I", "tipo": "Idioma", "horas": null, "correlativas": [], "minimoMateriasAprobadas": null, "idioma": "ALE", "nivel": "1"},
+{"id": "I06", "nombre": "Alemán II", "tipo": "Idioma", "horas": null, "correlativas": ["I05"], "minimoMateriasAprobadas": null, "idioma": "ALE", "nivel": "2"},
+{"id": "I07", "nombre": "Portugués I", "tipo": "Idioma", "horas": null, "correlativas": [], "minimoMateriasAprobadas": null, "idioma": "POR", "nivel": "1"},
+{"id": "I08", "nombre": "Portugués II", "tipo": "Idioma", "horas": null, "correlativas": ["I07"], "minimoMateriasAprobadas": null, "idioma": "POR", "nivel": "2"},
+{"id": "IA1", "nombre": "Acreditación Inglés", "tipo": "Idioma", "horas": null, "correlativas": [], "minimoMateriasAprobadas": null, "idioma": "ING", "nivel": "acreditacion"},
+{"id": "IA2", "nombre": "Acreditación Italiano", "tipo": "Idioma", "horas": null, "correlativas": [], "minimoMateriasAprobadas": null, "idioma": "ITA", "nivel": "acreditacion"},
+{"id": "IA3", "nombre": "Acreditación Alemán", "tipo": "Idioma", "horas": null, "correlativas": [], "minimoMateriasAprobadas": null, "idioma": "ALE", "nivel": "acreditacion"},
+{"id": "IA4", "nombre": "Acreditación Portugués", "tipo": "Idioma", "horas": null, "correlativas": [], "minimoMateriasAprobadas": null, "idioma": "POR", "nivel": "acreditacion"},
+{"id": "O17", "nombre": "Derecho de Daños", "tipo": "Optativa", "horas": 60, "correlativas": ["DdC"], "minimoMateriasAprobadas": 6},
+{"id": "O18", "nombre": "Seminario Internacional ítalo-argentino", "tipo": "Optativa", "horas": 30, "correlativas": [], "minimoMateriasAprobadas": 7},
+{"id": "O19", "nombre": "Italiano para las Ciencias Jurídicas", "tipo": "Optativa", "horas": 60, "correlativas": ["ITA"], "minimoMateriasAprobadas": 6},
+{"id": "O20", "nombre": "Sociología Jurídica", "tipo": "Optativa", "horas": 60, "correlativas": ["SYD"], "minimoMateriasAprobadas": 6},
+{"id": "O21", "nombre": "Teoría de los Partidos Políticos y los Sistemas Electorales", "tipo": "Optativa", "horas": 60, "correlativas": ["DC2"], "minimoMateriasAprobadas": 6},
+{"id": "O22", "nombre": "Gobierno y Administración Pública", "tipo": "Optativa", "horas": 60, "correlativas": ["DC2", "CP"], "minimoMateriasAprobadas": 6},
+{"id": "O23", "nombre": "Criminología", "tipo": "Optativa", "horas": 60, "correlativas": ["DPG"], "minimoMateriasAprobadas": 6},
+{"id": "O24", "nombre": "Derecho de la Extranjería", "tipo": "Optativa", "horas": 60, "correlativas": [], "minimoMateriasAprobadas": 6},
+{"id": "O25", "nombre": "Derecho de Minería y de la Energía", "tipo": "Optativa", "horas": 60, "correlativas": ["DR"], "minimoMateriasAprobadas": 6}
+]
+</script>
+<!-- FOJA:FIN optativas -->
+<!-- FOJA:INICIO config -->
+<script type="application/json" id="datos-config">
+{"horasTotales": 240, "horasMinOptativas": 120, "horasMinElectivas": 60, "pasoElectivas": 30, "limiteMaterias": 3, "idiomasCuentanPara": "ninguno", "leyendaHorarios": "Estos horarios son los que se dictaron en los dos cuatrimestres de 2026 y pueden estar sujetos a cambios. Cuando se publiquen los horarios de 2027, se actualizarán. Confirmá siempre en el SIU Guaraní.", "leyendaHorariosCorta": "Horarios de 2026, sujetos a cambios", "leyendaSinHorarios": "Sin horarios registrados: no se dictó en 2026", "actualizado": "2026-11-17"}
+</script>
+<!-- FOJA:FIN config -->
 <script>
-/* ===== DATOS (Excel): [código interno, nombre, año, ciclo, correlatividades, tipo] ===== */
-const DATOS=[
-['PC','Problemática del Conocimiento','1er año','Ciclo inicial','Ninguna','Obligatorio'],
-['HIA','Historia Institucional Argentina','1er año','Ciclo inicial','Ninguna','Obligatorio'],
-['DC1','Derecho Constitucional I','1er año','Ciclo inicial','Ninguna','Obligatorio'],
-['TD','Teoría del Derecho','1er año','Ciclo inicial','Ninguna','Obligatorio'],
-['EP','Economía Política','1er año','Ciclo inicial','Ninguna','Obligatorio'],
-['CP','Ciencia Política','1er año','Ciclo inicial','Ninguna','Obligatorio'],
-['FDP','Fundamentos del Derecho Privado','2do año','Ciclo inicial','TD','Obligatorio'],
-['SYD','Sociología y Derecho','2do año','Ciclo inicial','Ninguna','Obligatorio'],
-['TDP','Teoría del Derecho Procesal','2do año','Ciclo inicial','DC1, FDP','Obligatorio'],
-['DC2','Derecho Constitucional II','2do año','Ciclo inicial','DC1, TD','Obligatorio'],
-['DPG','Derecho Penal Parte General','3er año','Ciclo superior','DC2, 6 materias ciclo inicial','Obligatorio'],
-['DdO','Derecho de Obligaciones','3er año','Ciclo superior','FDP, 6 materias ciclo inicial','Obligatorio'],
-['DC3','Derecho Constitucional III','3er año','Ciclo superior','DC2, 6 materias ciclo inicial','Obligatorio'],
-['DdC','Derecho de los Contratos','3er año','Ciclo superior','DdO, 6 materias ciclo inicial','Obligatorio'],
-['DA','Derecho Administrativo','3er año','Ciclo superior','FDP, DC1, 6 materias ciclo inicial','Obligatorio'],
-['DAg','Derecho Agrario','3er año','Ciclo superior','FDP, 6 materias ciclo inicial','Obligatorio'],
-['DIP','Derecho Internacional Público','3er año','Ciclo superior','DC3, 6 materias ciclo inicial','Obligatorio'],
-['DDF','Derecho de Familia','4to año','Ciclo superior','DdO, 6 materias ciclo inicial','Obligatorio'],
-['DPA','Derecho Procesal Aplicado','4to año','Ciclo superior','TDP, 6 materias ciclo inicial','Obligatorio'],
-['DPE','Derecho Penal Parte Especial','4to año','Ciclo superior','DPG, 6 materias ciclo inicial','Obligatorio'],
-['DCE','Derecho Comercial y Empresarial','4to año','Ciclo superior','DdC, 6 materias ciclo inicial','Obligatorio'],
-['PJP','Personas Jurídicas Privadas','4to año','Ciclo superior','DCE, 6 materias ciclo inicial','Obligatorio'],
-['DR','Derechos Reales','4to año','Ciclo superior','DdC, 6 materias ciclo inicial','Obligatorio'],
-['DT','Derecho Tributario','4to año','Ciclo superior','DC2, 6 materias ciclo inicial','Obligatorio'],
-['DITV','Derecho de la Insolvencia y Títulos Valores','5to año','Ciclo superior','PJP, 6 materias ciclo inicial','Obligatorio'],
-['DSuc','Derecho Sucesorio','5to año','Ciclo superior','DDF, DR, 6 materias ciclo inicial','Obligatorio'],
-['DCon','Derecho del Consumidor','5to año','Ciclo superior','DC2, DdC, 6 materias ciclo inicial','Obligatorio'],
-['DdT','Derecho del Trabajo','5to año','Ciclo superior','DdC, 6 materias ciclo inicial','Obligatorio'],
-['DPP','Derecho Procesal Penal','5to año','Ciclo superior','DPE, 6 materias ciclo inicial','Obligatorio'],
-['FD','Filosofía del Derecho','5to año','Ciclo superior','DC3, PC, 6 materias ciclo inicial','Obligatorio'],
-['DSS','Derecho de la Seguridad Social','5to año','Ciclo superior','DA, 6 materias ciclo inicial','Obligatorio'],
-['DIPriv','Derecho Internacional Privado','5to año','Ciclo superior','DSuc, DITV, 6 materias ciclo inicial','Obligatorio'],
-['DAmb','Derecho Ambiental','5to año','Ciclo superior','DdO, 6 materias ciclo inicial','Obligatorio'],
-['PPF','Práctica Profesional Final','5to año','Ciclo superior','DA, DDF, DdT, DPA, DPP, 6 materias ciclo inicial','Obligatorio']
-];
-/* ===== CONFIGURACIÓN DEL PLAN (editable) ===== */
-const CONFIG={
- horasTotal:240,          /* horas totales entre optativas y electivas */
- horasMinOptativas:120,
- horasMinElectivas:60,
- pasoElectivas:30,        /* paso del control + / − */
- idiomasCuentanPara:'ninguno', /* 'ninguno' | 'optativas' | 'electivas' | 'total' */
- horasIdioma:0            /* horas que sumaría un idioma completo si idiomasCuentanPara no es 'ninguno' */
-};
-/* ===== HOJA 2 (Excel): [ID interno, nombre, tipo, horas, requisitos de materias, requisito cantidad] ===== */
-const OPTIDI=[
-["O01","Economía Social y Solidaria","Optativa",60,"EP, CP, HIA",6],
-["O02","Historia del Derecho","Optativa",60,"TD, HIA, DC1",6],
-["O03","Negociación y Mediación","Optativa",60,"DdC, DPA",6],
-["O04","Inglés para las Ciencias Jurídicas","Optativa",60,"ING",6],
-["O05","Derecho Universitario","Optativa",60,"DC1",6],
-["O06","Capacitación Judicial - Selección y remoción de magistrados","Optativa",60,"DC2",6],
-["O07","Introducción al Análisis Criminal","Optativa",60,"DPG, SYD",6],
-["O08","Derecho de Tránsito","Optativa",60,"DdO, DPG",6],
-["O09","Derecho del Deporte","Optativa",30,"DdO, TDP",6],
-["O10","Derecho Parlamentario","Optativa",60,"DC2",6],
-["O11","Entornos Digitales y Persecución Penal","Optativa",30,null,6],
-["O12","Seguridad Ciudadana","Optativa",60,null,6],
-["O13","Globalización y desarrollo","Optativa",60,"DC2, EP",6],
-["O14","Derecho digital y tecnologías disruptivas","Optativa",60,"DdC",6],
-["O15","Ejecución Penal","Optativa",30,"DC2, DPG",6],
-["O16","Teoría de la Argumentación","Optativa",60,null,6],
-["I01","Inglés I","Idioma",null,null,null],
-["I02","Inglés II","Idioma",null,"I01",null],
-["I03","Italiano I","Idioma",null,null,null],
-["I04","Italiano II","Idioma",null,"I03",null],
-["I05","Alemán I","Idioma",null,null,null],
-["I06","Alemán II","Idioma",null,"I05",null],
-["I07","Portugués I","Idioma",null,null,null],
-["I08","Portugués II","Idioma",null,"I07",null],
-["IA1","Acreditación Inglés","Idioma",null,null,null],
-["IA2","Acreditación Italiano","Idioma",null,null,null],
-["IA3","Acreditación Alemán","Idioma",null,null,null],
-["IA4","Acreditación Portugués","Idioma",null,null,null],
-["O17","Derecho de Daños","Optativa",60,"DdC",6],
-["O18","Seminario Internacional ítalo-argentino","Optativa",30,null,7],
-["O19","Italiano para las Ciencias Jurídicas","Optativa",60,"ITA",6],
-["O20","Sociología Jurídica","Optativa",60,"SYD",6],
-["O21","Teoría de los Partidos Políticos y los Sistemas Electorales","Optativa",60,"DC2",6],
-["O22","Gobierno y Administración Pública","Optativa",60,"DC2, CP",6],
-["O23","Criminología","Optativa",60,"DPG",6],
-["O24","Derecho de la Extranjería","Optativa",60,null,6],
-["O25","Derecho de Minería y de la Energía","Optativa",60,"DR",6]
-];
-/* Idiomas: nivel 1, nivel 2 y acreditación (IDs de la hoja 2) */
-const IDIOMAS=[{k:'ING',n1:'I01',n2:'I02',acr:'IA1'},{k:'ITA',n1:'I03',n2:'I04',acr:'IA2'},{k:'ALE',n1:'I05',n2:'I06',acr:'IA3'},{k:'POR',n1:'I07',n2:'I08',acr:'IA4'}];
-
-/* ===== HORARIOS DE CÁTEDRAS (hoja 3 del Excel; 2026, dos cuatrimestres) — reemplazar este bloque al publicar los de 2027 =====
-   [código de materia, cátedra (null = única), comisión, titular, adjuntos (separados por ;), modalidad, [[día, inicio, fin], ...], observaciones] */
-const HORARIOS=[
-["DC2","A",1,"TIZÓN, Alejandro","Lemos, Santiago; Ardoy, Alejandro","Regular",[["Lunes","16:00","20:00"],["Martes","16:00","18:00"]],null],
-["DC2","A",2,"TIZÓN, Alejandro","Lauría, Luciano; Montefiori, Paula","Regular",[["Lunes","16:00","20:00"],["Jueves","16:00","18:00"]],null],
-["DC2","B",null,"ROSATTI, Emilio","Lauría, Luciano","Promocional",[["Jueves","16:00","20:00"],["Miércoles","18:00","20:00"]],null],
-["DC2","C",null,"UBERTI, Mariela","Daverio, Gustavo","Promocional",[["Miércoles","16:00","18:00"],["Lunes","14:00","16:00"],["Jueves","14:00","16:00"]],null],
-["DC2","D",1,"VICENTE, Roberto","Suarez Faisal, Martín; De Olazabal, Mariana; García, Ximena; Cabrera, Florencia","Promocional",[["Jueves","16:00","18:00"],["Viernes","12:00","14:00"],["Martes","12:00","14:00"]],null],
-["DC2","D",2,"VICENTE, Roberto","García, Ximena; Cabrera, Florencia; Toso, Mauro","Promocional",[["Jueves","16:00","18:00"],["Viernes","12:00","14:00"],["Martes","14:00","16:00"]],null],
-["FDP","A",null,"REYNA, Carlos","Kilgelmann, Romina; Sanchez, Sabrina","Promocional",[["Martes","16:00","20:00"],["Miércoles","18:00","20:00"]],null],
-["FDP","B",null,"LONGO, Patricio","Coassin, Rina; Scaglia, Agustín","Promocional",[["Lunes","16:00","18:00"],["Martes","16:00","18:00"],["Miércoles","18:00","20:00"]],null],
-["FDP","C",null,"MOIA, Ángel","Rodríguez Calderon, Cecilia; Cerda, Marina","Promocional",[["Jueves","14:00","16:00"],["Jueves","18:00","20:00"],["Miércoles","14:00","16:00"]],null],
-["FDP","D",null,"FABIANO, Aidilio","Valorzi, Francisco","Promocional",[["Lunes","18:00","20:00"],["Miércoles","14:00","20:00"]],null],
-["FDP","E",null,"WAGNER, Claudia","Rodríguez Calderon, Cecilia; Depetris, Francisco; Reyna, Rosario","Promocional",[["Jueves","08:00","12:00"],["Jueves","14:00","16:00"]],null],
-["DdO","A",null,"AGA, Javier","Ferrer, Federico; Berros, Valeria; Barrilis, Natalia","Regular",[["Miércoles","18:00","20:00"],["Lunes","08:00","10:00"],["Lunes","14:00","16:00"]],null],
-["DdO","B",null,"DELLAMONICA, Roberto","Moro, Emilio; Alderete, Walter","Regular",[["Lunes","16:00","18:00"],["Miércoles","10:00","14:00"]],null],
-["DdO","D",null,"SOZZO, Gonzalo","Churruarín, Mariano; Reyna, Carlos Alberto; Fröschke, Frank","Promocional",[["Martes","16:00","18:00"],["Miércoles","16:00","18:00"],["Jueves","14:00","16:00"]],null],
-["DdC","C",1,"WAGNER, Claudia","Fröschke, Frank; Gianfelici, Florencia; Sabate, Martha","Promocional",[["Lunes","08:00","12:00"],["Martes","16:00","18:00"]],null],
-["DdC","C",2,"WAGNER, Claudia","Fröschke, Frank; Dos Santos Freire, Betania","Promocional",[["Lunes","08:00","12:00"],["Lunes","14:00","16:00"]],null],
-["DdC","D",null,"ALBORNOZ, Elena","Pita, Martín; Carbo Amoroso, Cecilia","Promocional",[["Miércoles","18:00","20:00"],["Martes","16:00","20:00"]],null],
-["DdC","E",null,"SOZZO, Gonzalo","Bianchi, Elena; Churruarín, Mariano","Promocional",[["Miércoles","16:00","20:00"],["Martes","18:00","20:00"]],null],
-["DCE","A",1,"DARSAUT, M Victoria","Rostan, Matías; Paez, Juan; Puyol, M Sara","Promocional",[["Jueves","14:00","18:00"],["Lunes","14:00","16:00"]],null],
-["DCE","A",2,"WALKER DE TULER, M Cristina","Romano, Rubén; Somaglia, Gabriel","Promocional",[["Jueves","10:00","12:00"],["Martes","10:00","12:00"],["Miércoles","10:00","12:00"]],null],
-["DCE","C",null,"PIEDECASAS, Miguel","Arrua, Carolina; Cristoforato, Daniel","Promocional",[["Lunes","18:00","20:00"],["Miércoles","18:00","20:00"]],null],
-["PJP","A",null,"SOMAGLIA, Gabriel","Forchetti, Leandro; Prono, Patricio","Regular",[["Lunes","18:00","20:00"],["Miércoles","18:00","20:00"],["Jueves","18:00","20:00"]],null],
-["PJP","B",1,"GOMEZ BAUSELA, María Silvia","Prono, Javier; Prono, Patricio","Promocional",[["Lunes","10:00","14:00"],["Jueves","18:00","20:00"]],null],
-["PJP","B",2,"GARCÍA, Marcelo","Basualdo, María Eugenia; Yódice, Alejandro","Promocional",[["Lunes","12:00","14:00"],["Lunes","16:00","18:00"],["Martes","18:00","20:00"]],null],
-["DITV","A",null,"DE CÉSARIS, María Cristina","Basualdo, María Eugenia; Prono, Josefina","Promocional",[["Lunes","16:00","20:00"],["Martes","16:00","18:00"]],null],
-["DITV","B",null,"PRONO, Mariano","Basualdo, María Eugenia; Moia, Ángel Luis","Promocional",[["Lunes","16:00","20:00"],["Jueves","16:00","18:00"]],null],
-["DITV","C",null,"DE CÉSARIS, María Cristina","Ardoy, M Victoria; Prono, Javier","Promocional",[["Lunes","16:00","20:00"],["Martes","18:00","20:00"]],null],
-["DR","A",null,"DELLAMONICA, Roberto","Scortechini, Cintia; Bazzan, Guillermo","Regular",[["Lunes","14:00","16:00"],["Miércoles","12:00","14:00"],["Martes","14:00","16:00"]],null],
-["DR","B",null,"DAGUERRE, Luis","Garelli, Pamela; Sureda, Carlos; Dallaglio, Juan C y otros","Promocional",[["Jueves","18:00","20:00"],["Miércoles","18:00","20:00"],["Martes","18:00","20:00"]],null],
-["DDF","A",null,"GALLI FIANT, María Magdalena","Bay, Nahuel; Gon, María Guadalupe","Promocional",[["Martes","14:00","16:00"],["Miércoles","14:00","16:00"],["Jueves","14:00","16:00"]],null],
-["DDF","B",null,"JÁUREGUI, Rodolfo","Giulisasti, Jorgelina; Basail, María del Valle; Spina, Paula","Promocional",[["Viernes","18:00","22:00"],["Miércoles","14:00","16:00"],["Jueves","14:00","16:00"]],"Los viernes es una clase cada dos semanas."],
-["DDF","C",null,"GALLETTI, Judith","Ramos, Rodolfo; Cortés, Julio; Murga, Eleonora","Promocional",[["Lunes","18:00","20:00"],["Miércoles","14:00","18:00"],["Jueves","18:00","20:00"],["Martes","18:00","20:00"]],"La clase de los miércoles es sólo el primer miércoles del mes."],
-["DSuc","A",1,"GUILISASTI, Jorgelina","Barrilis, Carlos; Balestra, Natalia","Regular",[["Miércoles","12:00","14:00"],["Lunes","12:00","14:00"],["Martes","14:00","16:00"]],null],
-["DSuc","A",2,"GUILISASTI, Jorgelina","Olivera, Javier; Gutierrez Dalla Fontana, Esteban","Regular",[["Miércoles","12:00","14:00"],["Lunes","12:00","14:00"],["Martes","16:00","18:00"]],null],
-["DSuc","B",null,"GUASTAVINO, Gabriel","Saez, Emiliano","Promocional",[["Martes","16:00","18:00"],["Lunes","10:00","12:00"],["Jueves","16:00","18:00"]],null],
-["DPG","B",1,"OLAZABAL, Julio","García Gastaldo, Ayelén; Di Siena, Diego; Feijoo, Marta","Promocional",[["Lunes","10:00","12:00"],["Miércoles","16:00","18:00"],["Martes","12:00","14:00"],["Jueves","12:00","14:00"]],null],
-["DPG","B",2,"OLAZABAL, Julio","Feijoo, Marta; Ríos, Leandro","Regular",[["Lunes","10:00","12:00"],["Miércoles","16:00","18:00"],["Martes","18:00","20:00"]],null],
-["DPG","C",null,"ALVAREZ, Ricardo","Goyeneche, Cecilia; Alvarez, Lisandro; Podhainy, Juan; Amadeo, Sebastián","Promocional",[["Jueves","18:00","20:00"],["Lunes","16:00","20:00"],["Martes","18:00","20:00"]],null],
-["DPG","D",null,"GARCÍA, Jorge","Goyeneche, Cecilia; Ríos, Leandro; Canavese, Jonatan","Promocional",[["Jueves","18:00","20:00"],["Lunes","18:00","20:00"],["Martes","16:00","18:00"],["Miércoles","18:00","20:00"]],null],
-["DPG","E",null,"GEMIGNANI, Juan Carlos","Dato, Leandro; Corti, Lisandro","Regular",[["Sábado","08:00","12:00"],["Miércoles","20:00","22:00"],["Martes","14:00","18:00"]],"Las clases de los martes son cada dos semanas."],
-["DPE","A",null,"OLAZABAL, Julio","Di Siena, Diego; Fiz, Cristian; Biondi, María Eugenia; Ferraro, Cristina; Patrizi, Jorge","Regular",[["Martes","10:00","12:00"],["Miércoles","18:00","20:00"],["Lunes","20:00","22:00"],["Jueves","16:00","18:00"]],null],
-["DPE","B",null,"GARCÍA, Jorge","Goyeneche, Cecilia","Promocional",[["Jueves","16:00","18:00"],["Lunes","14:00","18:00"]],null],
-["DPE","C",null,"AMADEO, Sebastián","Melia, Samanta; Vazquez, Clara","Promocional",[["Martes","20:00","22:00"],["Lunes","20:00","22:00"],["Miércoles","20:00","22:00"]],null],
-["DC3","A",null,"VICENTE, Roberto","Gimenez, Rocío; Saini, Paula","Promocional",[["Lunes","18:00","20:00"],["Miércoles","18:00","20:00"]],null],
-["DC3","B",1,"MOLINA, Adriana","Stavole, Agustina","Regular",[["Miércoles","14:00","18:00"]],null],
-["DC3","B",2,"MOLINA, Adriana","Bisutti, Cesar","Regular",[["Lunes","16:00","20:00"]],"Las clases de esta comisión son virtuales."],
-["DC3","C",null,"SUAREZ FAISAL, Martín","Stavole, Agustina","Regular",[["Miércoles","14:00","18:00"]],null],
-["TDP","A",null,"ROSSI GERARD, Lucila","Saxer, Andrea","Regular",[["Lunes","12:00","14:00"],["Miércoles","18:00","20:00"]],null],
-["TDP","B",null,"AVERO, Sergio","Sedlacek, Federico","Promocional",[["Jueves","10:00","12:00"],["Viernes","10:00","12:00"]],null],
-["TDP","C",null,"SEDLACEK, Federico","Ramirez Amable, Valentina","Regular",[["Miércoles","16:00","20:00"]],null],
-["TDP","D",null,"GARROTE, Angel","Rossi Gerard, Lucila","Regular",[["Miércoles","10:00","14:00"]],null],
-["DPA","C",null,"VARGAS, Abraham","Piana, Liliana; Barucca, Mario; Sedlacek, Federico","Regular",[["Martes","18:00","22:00"],["Miércoles","20:00","22:00"],["Jueves","18:00","20:00"]],null],
-["DPA","B",null,"AVERO, Sergio","Bermudez, Claudio; Hojman, Pablo; Tobares, Dante","Promocional",[["Viernes","08:00","10:00"],["Lunes","18:00","20:00"],["Miércoles","18:00","20:00"],["Martes","20:00","22:00"]],null],
-["DPA","D",null,"RIOS, Gustavo","Cecchini, Ignacio; Tobares, Dante","Regular",[["Lunes","14:00","16:00"],["Miércoles","14:00","18:00"],["Martes","18:00","20:00"]],null],
-["DPP","A",null,"COCOCCIONI, Pablo","Tallarico, Hector; Patrizi, Jorge","Promocional",[["Martes","18:00","20:00"],["Lunes","18:00","20:00"],["Jueves","14:00","16:00"]],null],
-["DPP","B",null,"BARLETTA, Mario","Saux, Santiago; Neffen, Juan Manuel; Broggi Forclaz, Matías Alberto; Grimberg, Federico","Promocional",[["Lunes","14:00","16:00"],["Miércoles","14:00","18:00"]],null],
-["DPP","D",null,"OLIVA, Juan Manuel","Drivet, Matías; Balangione, Jaquelina","Regular",[["Viernes","14:00","18:00"],["Miércoles","18:00","20:00"]],null],
-["DdT","A",1,"DE PETRE, Patricia","Coppoleta, Sebastián; Vigo, Consuelo; De Manuele, Abel","Regular",[["Viernes","08:00","10:00"],["Viernes","12:00","16:00"]],null],
-["DdT","A",2,"DE MANUELE, Abel","Abramovich, Andrés; Pussineri, Pedro Sebastián","Regular",[["Miércoles","16:00","18:00"],["Jueves","16:00","18:00"],["Viernes","16:00","18:00"]],null],
-["DdT","B",null,"CANTARD, Albor","Condal, Lucila; Azario, Malena","Promocional",[["Lunes","16:00","18:00"],["Martes","16:00","18:00"],["Miércoles","16:00","18:00"]],null],
-["DAg","A",null,"MAIZTEGUI, Horacio","Castro, Alejandra","Promocional",[["Jueves","18:00","22:00"]],null],
-["DAg","B",null,"BERMUDEZ, Claudio","Spano, Lucena","Promocional",[["Miércoles","18:00","22:00"],["Viernes","14:00","16:00"]],null],
-["DIPriv","A",null,"GIMENEZ CORTE, Cristian","Filippon, Carolina; Benitez, Juan Francisco","Regular",[["Martes","18:00","20:00"],["Lunes","16:00","18:00"],["Jueves","18:00","20:00"]],null],
-["DIPriv","B",null,"ALL, Paula","Wegher Osci, Florencia","Promocional",[["Lunes","10:00","14:00"],["Miércoles","10:00","12:00"],["Jueves","12:00","14:00"]],"Las clases de los miércoles son cada dos semanas."],
-["DIPriv","C",null,"GIMENEZ CORTE, Cristian","Chiuchquievich, Adriana","Regular",[["Miércoles","18:00","20:00"],["Jueves","18:00","20:00"]],"Esta comisión es de cursado virtual."],
-["DSS","A",null,"COCERES, Celeste","Martin, Juan","Regular",[["Lunes","14:00","16:00"],["Jueves","14:00","16:00"]],"Esta comisión es de cursado virtual."],
-["DSS","B",null,"DE PETRE, Patricia","Gazzo, María Virginia","Regular",[["Miércoles","14:00","16:00"],["Jueves","14:00","16:00"]],null],
-["DA","A",null,"REYNA, Justo","Weder, Rubén Luis; Peñalva, Gerónimo; Lucía, Adrián; Berta, Victor","Promocional",[["Martes","14:00","16:00"],["Miércoles","14:00","16:00"],["Jueves","14:00","16:00"]],null],
-["DA","B",null,"LISA, Federico","Vigo, Consuelo; Migno, Mario Gabriel; Molinas, Nicanor; Passarella, Julián","Promocional",[["Lunes","14:00","16:00"],["Martes","14:00","16:00"],["Miércoles","14:00","16:00"]],null],
-["DA","C",null,"GAGGIAMO, Esteban","Mantica, Luis; Molinari, Miguel; Peñalva, Gerónimo","Regular",[["Lunes","20:00","22:00"],["Martes","20:00","22:00"],["Miércoles","20:00","22:00"]],null],
-["DIP","A",null,"MARCIONNI, Nelson Daniel",null,"Promocional",[["Jueves","16:00","20:00"],["Viernes","12:00","16:00"]],"Esta comisión es de cursado virtual."],
-["DIP","B",null,"DÍAZ, Claudio","Sciolla, Vanina; Yermanos, José","Regular",[["Martes","16:00","18:00"],["Miércoles","16:00","18:00"],["Jueves","16:00","18:00"]],null],
-["DIP","C",null,"DEGIORGIO, Selva","Coronel, Germán; Albarracín, Gabriel","Promocional",[["Lunes","14:00","16:00"],["Martes","14:00","18:00"]],null],
-["DT","A",null,"FOLCO, Carlos María","Achleitner, Gerardo","Regular",[["Miércoles","18:00","22:00"],["Lunes","20:00","22:00"]],"Esta comisión es de cursado virtual."],
-["DT","B",null,"ROMERO ACUÑA, Roberto","Rivero, Francisco","Regular",[["Lunes","20:00","22:00"],["Miércoles","20:00","22:00"]],null],
-["DT","C",null,"REZZOAGLI, Luciano","Bazza, Alcides","Promocional",[["Jueves","14:00","16:00"],["Martes","12:00","16:00"]],null],
-["DCon","A",null,"BIANCHI, Lorena","Sozzo, Gonzalo; Bevilacqua, Jimena","Promocional",[["Jueves","10:00","14:00"]],null],
-["DCon","B",null,"CHURRUARIN, Mariano","Clement, María Florencia; Sozzo, Gonzalo","Promocional",[["Jueves","12:00","16:00"]],null],
-["DAmb","A",1,"SANCHEZ IZQUIERDO, Pedro","De Greef, Pablo; Gottardi, María Luciana; D'Amico, Germán","Promocional",[["Martes","14:00","16:00"],["Miércoles","14:00","16:00"]],null],
-["DAmb","A",2,"SANCHEZ IZQUIERDO, Pedro","De Greef, Pablo; Gottardi, María Luciana; D'Amico, Germán","Regular",[["Jueves","12:00","16:00"]],null],
-["SYD","B",null,"BERROS, Valeria","Haidar, Victoria; Franco, Dabel","Promocional",[["Jueves","10:00","14:00"]],null],
-["SYD","D",1,"SOZZO, Máximo","Montero, Augusto; Actis, Alejandro","Promocional",[["Lunes","16:00","18:00"],["Miércoles","16:00","18:00"]],null],
-["SYD","D",2,"SOZZO, Máximo","Montero, Augusto; Claus, Waldemar","Promocional",[["Lunes","16:00","18:00"],["Miércoles","18:00","20:00"]],null],
-["SYD","D",3,"SOZZO, Máximo","Gonzalez, Gustavo; Ferreccio, Vanina","Promocional",[["Lunes","16:00","18:00"],["Miércoles","12:00","14:00"]],null],
-["SYD","D",4,"SOZZO, Máximo","Somaglia, Maialen","Promocional",[["Lunes","16:00","18:00"],["Miércoles","18:00","20:00"]],null],
-["FD","A",null,"MARICHAL, María Eugenia","Coppoleta, Sebastián","Promocional",[["Lunes","16:00","18:00"],["Miércoles","16:00","18:00"]],null],
-["FD","B",null,"SODERO, Eduardo",null,"Regular",[["Lunes","18:00","22:00"]],"Esta materia es de cursado híbrido. Alterna entre virtual y presencial."],
-["FD","C",null,"BARRAGUIRRE, Jorge","Munne, Guillermo; Busaniche, Mateo","Regular",[["Miércoles","18:00","20:00"],["Martes","18:00","20:00"],["Lunes","16:00","18:00"]],null],
-["DC1","A",2,"VICENTE, Roberto","De Olazabal, Mariana; Toso, Mauro","Promocional",[["Viernes","10:00","12:00"],["Martes","16:00","18:00"]],null],
-["DC1","C",null,"BERTONA, Mariana","Botto, Romina","Promocional",[["Viernes","12:00","14:00"],["Jueves","14:00","16:00"]],"Esta materia es exclusiva para recursantes."],
-["TD","A",null,"FESSIA, Ricardo","Reigert, Ivana; Tomas, Verónica","Promocional",[["Viernes","10:00","12:00"],["Jueves","18:00","20:00"],["Lunes","16:00","18:00"]],null],
-["TD","B",2,"RODRIGUEZ BERTONI, María Jesús","Ferreyra, Emanuel Andrés; Perin, Alejandra","Promocional",[["Miércoles","14:00","16:00"],["Lunes","18:00","20:00"],["Jueves","16:00","18:00"]],"Esta materia es exclusiva para recursantes."],
-["HIA","A",1,"FERNANDEZ, Jorge Raúl","Fernandez, Jorge Andrés; Grandinetti, Viviana","Regular",[["Lunes","08:00","10:00"],["Viernes","08:00","10:00"]],"Esta materia es exclusiva para recursantes."],
-["HIA","A",3,"FERNANDEZ, Jorge Raúl","Rodriguez Duch, Martín; Fernandez, Federico","Promocional",[["Martes","18:00","22:00"],["Miércoles","18:00","20:00"]],null],
-["HIA","B",4,"BOLCATTO, Viviana","Bertero, Eliana; Salomon, Pablo","Promocional",[["Jueves","10:00","12:00"],["Martes","08:00","10:00"]],null],
-["CP","A",1,"FERRER, Magín","Tarragona, Gustavo; Spinelli, Javier; García, Ivana","Promocional",[["Lunes","20:00","22:00"],["Martes","20:00","22:00"]],null],
-["CP","A",4,"FERRER, Magín","Tarragona, Gustavo; Spinelli, Javier","Regular",[["Miércoles","20:00","22:00"],["Jueves","20:00","22:00"]],null],
-["CP","A",6,"FERRER, Magín","Tarragona, Gustavo; Spinelli, Javier","Regular",[["Miércoles","20:00","22:00"],["Jueves","20:00","22:00"]],null],
-["CP","B",2,"MANEIRO, Julián","Maidana, Fanny; Garcia, Ivana","Promocional",[["Viernes","12:00","16:00"]],null],
-["PC","A",1,"NIEL, Luis Ignacio","Alles, Nicolás","Regular",[["Martes","14:00","16:00"],["Miércoles","08:00","10:00"]],null],
-["PC","C",3,"GALETTO, Gerardo","Alles, Nicolás","Regular",[["Miércoles","10:00","12:00"],["Viernes","10:00","12:00"]],"Esta materia es exclusiva para recursantes."],
-["PC","C",4,"GALETTO, Gerardo","Galanzino, Marianela; Caceres, Martin","Regular",[["Miércoles","08:00","12:00"]],null],
-["EP","A",1,"DEMONTE, Norberto","Forchetti, Leandro","Regular",[["Lunes","10:00","12:00"],["Miércoles","10:00","12:00"]],"Esta materia es exclusiva para recursantes."],
-["EP","B",4,"TEALDO, Julio","Lozeco, Julio","Promocional",[["Martes","10:00","12:00"],["Jueves","10:00","12:00"]],null],
-["EP","C",2,"REINOSO, Ricardo Manuel","Sotto, Orlando","Promocional",[["Martes","16:00","20:00"]],null],
-["O01",null,null,null,"Tealdo, Julio; Lozeco, Julio; Sotto, Orlando; Enrique, Emiliano","Regular",[["Miércoles","14:00","16:00"]],null],
-["O02",null,null,null,"Fessia, Ricardo; Amsier, Eric","Regular",[["Viernes","14:00","18:00"]],null],
-["O03",null,null,null,"Ruda, Elina","Regular",[["Viernes","14:00","18:00"]],null],
-["O04",null,null,null,"Di Giuseppe, Salomé; Gallo, Paula","Promocional",[["Miércoles","08:00","10:00"]],"También son parte de la evaluación las actividades del aula virtual."],
-["O05",null,null,null,"Mántica, Luis","Promocional",[["Martes","08:00","10:00"],["Miércoles","08:00","10:00"]],null],
-["O06",null,null,null,"Levin, Claudia; Pivetta, José; Lemos, Agustín","Regular",[["Sábado","08:00","12:00"],["Martes","16:00","18:00"]],"Las clases de los sábados son cada dos semanas y la de los martes se dicta una vez al mes."],
-["O23",null,null,null,"Sozzo, Máximo; Claus, Waldemar","Promocional",[["Lunes","10:00","12:00"],["Martes","10:00","12:00"]],null],
-["O08",null,null,null,"Piedecasas, Miguel; Lucía, Adrián; Rodelli, Florencia","Promocional",[["Jueves","18:00","22:00"]],null],
-["O09",null,null,null,"Romano, Ruben","Regular",[["Miércoles","18:00","20:00"]],null],
-["O10",null,null,null,"Lemos, Santiago; Lemos, Agustín","Regular",[["Martes","16:00","20:00"]],null],
-["O11",null,null,null,"Spina, Laura; Fumis, Federico","Regular",[["Lunes","16:00","18:00"]],null],
-["O12",null,null,null,"Hoet, Mariano","Regular",[["Viernes","16:00","20:00"]],null],
-["O13",null,null,null,"Tealdo, Julio; Sidler, Joel","Promocional",[["Lunes","09:00","12:00"]],null],
-["O14",null,null,null,"Wagner, Claudia; Puyol, Sara; Darsaut, M Victoria; Rostan, Matías; Gianfelici, María Florencia","Regular",[["Lunes","18:00","20:00"]],null],
-["O15",null,null,null,"Tizon, Alejandro; Montefiori, Paula; Caceres, Martín","Regular",[["Martes","18:00","20:00"]],null],
-["O16",null,null,null,"Barranco, Graciela","Regular",[["Martes","14:00","16:00"],["Jueves","14:00","16:00"]],null],
-["O22",null,null,null,"Magnin, Juan Pablo","Promocional",[["Martes","12:00","16:00"]],null],
-["I01","A",null,"GALLO, Paula",null,"Promocional",[["Lunes","10:00","12:00"],["Miércoles","10:00","12:00"]],null],
-["I01","B",1,"PETEAN, Verónica",null,"Promocional",[["Lunes","14:00","16:00"],["Miércoles","14:00","16:00"]],null],
-["I01","B",2,"DAGA, Carolina",null,"Promocional",[["Lunes","14:00","16:00"],["Viernes","14:00","16:00"]],null],
-["I01","C",null,"DAGA, Carolina",null,"Promocional",[["Lunes","16:00","18:00"],["Viernes","16:00","18:00"]],null],
-["I02","A",null,"DI GIUSEPPE, Salomé",null,"Promocional",[["Martes","08:00","10:00"],["Jueves","08:00","10:00"]],"Esta materia es de cursado virtual."],
-["I02","B",null,"GAUNA, Constanza",null,"Promocional",[["Martes","10:00","12:00"],["Jueves","10:00","12:00"]],null],
-["I02","C",null,"PETEAN, Verónica",null,"Promocional",[["Lunes","16:00","18:00"],["Miércoles","16:00","18:00"]],null],
-["I03","A",null,"FERNANDEZ, Marisol",null,"Promocional",[["Martes","18:00","20:00"],["Jueves","18:00","20:00"]],null],
-["I04","A",null,"FERNANDEZ, Marisol",null,"Promocional",[["Martes","18:00","20:00"],["Jueves","18:00","20:00"]],null],
-["I05","A",null,"BIANCHI, Martha",null,"Promocional",[["Lunes","08:00","10:00"],["Jueves","08:00","10:00"]],null],
-["I06","A",null,"BIANCHI, Martha",null,"Promocional",[["Lunes","08:00","10:00"],["Jueves","08:00","10:00"]],null],
-["I07","A",null,"LÓPEZ, Sandra",null,"Promocional",[["Martes","10:00","12:00"],["Jueves","10:00","12:00"]],null],
-["I08","A",null,"LÓPEZ, Sandra",null,"Promocional",[["Martes","10:00","12:00"],["Jueves","10:00","12:00"]],null]
-];
-
-/* ===== POSICIONES (imagen del plan): id: [x, y, ancho, alto, nombre mostrado] ===== */
-const POSICIONES={
-PC:[43,55,290,103,'Problemática del Conocimiento'],HIA:[353,55,290,103,'Historia Institucional Argentina'],DC1:[654,55,290,103,'Derecho Constitucional I'],
-TD:[965,55,290,103,'Teoría del Derecho'],EP:[1276,55,290,103,'Economía Política'],CP:[1577,55,290,103,'Ciencia Política'],
-DC3:[147,183,290,103,'Derecho Constitucional III'],DC2:[499,183,290,103,'Derecho Constitucional II'],TDP:[851,183,290,103,'Teoría del Derecho Procesal'],
-FDP:[1186,183,290,103,'Fundamentos del Derecho Privado'],SYD:[1526,183,290,103,'Sociología y Derecho'],
-FD:[1,311,290,103,'Filosofía del Derecho'],DT:[315,311,290,103,'Finanzas Públicas y Derecho Tributario'],DPG:[626,311,290,103,'Derecho Penal Parte General'],
-DA:[948,311,290,103,'Derecho Administrativo'],DdO:[1250,311,290,103,'Derecho de Obligaciones'],DAg:[1578,311,290,103,'Derecho Agrario'],
-DIP:[1,439,290,103,'Derecho Internacional Público'],DSS:[312,439,290,103,'Derecho de la Seguridad Social'],DPE:[619,439,290,103,'Derecho Penal Parte Especial'],
-DDF:[957,439,290,103,'Derecho de Familia'],DdC:[1265,439,290,103,'Derecho de Contratos'],DAmb:[1591,439,290,103,'Derecho Ambiental'],
-DPP:[517,567,290,103,'Derecho Procesal Penal'],DPA:[836,567,290,103,'Derecho Procesal Aplicado'],DdT:[1144,567,290,103,'Derecho del Trabajo'],DR:[1526,567,290,103,'Derechos Reales'],
-OYE:[43,695,617,230,'Optativas y electivas'],DCon:[705,695,290,103,'Derecho del Consumidor'],
-DCE:[1198,695,290,103,'Derecho Comercial y Empresarial'],PJP:[1568,695,290,103,'Personas Jurídicas Privadas'],
-PPF:[800,845,290,103,'Práctica Profesional Final'],
-DSuc:[1198,823,290,103,'Derecho Sucesorio'],DITV:[1526,823,331,103,'Derecho de la Insolvencia y los Títulos Valores'],
-IDI:[189,951,290,103,'Idioma Extranjero'],DIPriv:[1457,951,290,103,'Derecho Internacional Privado']
-};
-const W=1890,H=1062;
+/* ===== LECTURA DE DATOS =====
+   Los datos editables viven en bloques JSON delimitados (<!-- FOJA:INICIO nombre --> … <!-- FOJA:FIN nombre -->) y se leen desde acá. */
+const ERRD={}; /* bloques que faltan o tienen un JSON inválido */
+const ZONA='America/Argentina/Buenos_Aires';
+const DIAS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+function bloque(n){try{const e=document.getElementById('datos-'+n);if(!e)throw new Error('falta el bloque');return JSON.parse(e.textContent)}catch(err){ERRD[n]=1;console.error('[Foja Cero] bloque "'+n+'":',err.message||err);return null}}
+const E=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const un=t=>String(t).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');
+const IDOK=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,24}$/.test(v);
+const TXT=v=>typeof v==='string'?v.trim():'';
+const NUM=v=>typeof v==='number'&&isFinite(v)?v:null;
+const HORA=v=>{const m=/^(\d{1,2}):(\d{2})$/.exec(String(v==null?'':v).trim());return m&&+m[1]<24&&+m[2]<60?String(+m[1]).padStart(2,'0')+':'+m[2]:null};
+const URLOK=v=>typeof v==='string'&&/^https?:\/\//i.test(v.trim());
+const mh=h=>+h.slice(0,2)*60+ +h.slice(3);
+const descartar=(n,i,why)=>console.warn('[Foja Cero] bloque "'+n+'": registro '+(i+1)+' descartado ('+why+')');
+function lista(n){const v=bloque(n);if(v===null)return[];if(!Array.isArray(v)){ERRD[n]=1;console.error('[Foja Cero] bloque "'+n+'": se esperaba una lista');return[]}return v}
+function nuevo(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+/* config: reglas numéricas, límite de materias y leyendas */
+const CFGJ=(()=>{const c=bloque('config');if(c&&typeof c==='object'&&!Array.isArray(c))return c;ERRD.config=1;return{}})();
+const CONFIG={horasTotal:NUM(CFGJ.horasTotales)||0,horasMinOptativas:NUM(CFGJ.horasMinOptativas)||0,horasMinElectivas:NUM(CFGJ.horasMinElectivas)||0,pasoElectivas:Math.max(1,NUM(CFGJ.pasoElectivas)||0),
+ limiteMaterias:NUM(CFGJ.limiteMaterias)||Infinity,idiomasCuentanPara:TXT(CFGJ.idiomasCuentanPara)||'ninguno',leyendaHorarios:TXT(CFGJ.leyendaHorarios),leyendaHorariosCorta:TXT(CFGJ.leyendaHorariosCorta),leyendaSinHorarios:TXT(CFGJ.leyendaSinHorarios),actualizado:TXT(CFGJ.actualizado)};
+/* plan: materias obligatorias + posición en el diagrama (y las tarjetas Idioma y Optativas) */
+const DATOS=[],POSICIONES={};
+lista('plan').forEach((r,i)=>{
+ if(!r||!IDOK(r.codigo)||[r.x,r.y,r.ancho,r.alto].some(v=>NUM(v)===null)){descartar('plan',i,'faltan datos');return}
+ if(POSICIONES[r.codigo]){descartar('plan',i,'código repetido');return}
+ if(r.tarjeta===true){if(r.codigo!=='IDI'&&r.codigo!=='OYE'){descartar('plan',i,'tarjeta con código no válido');return}
+  POSICIONES[r.codigo]=[r.x,r.y,r.ancho,r.alto,E(TXT(r.etiqueta)||r.codigo)];return}
+ if(!TXT(r.nombre)){descartar('plan',i,'sin nombre');return}
+ const cs=(Array.isArray(r.correlativas)?r.correlativas:[]).filter(IDOK),n=NUM(r.materiasCicloInicial)||0;
+ DATOS.push([r.codigo,E(TXT(r.nombre)),E(TXT(r.anio)),E(TXT(r.ciclo)),[...cs,...(n>0?[n+' materias ciclo inicial']:[])].join(', ')||'Ninguna',E(TXT(r.tipo))]);
+ POSICIONES[r.codigo]=[r.x,r.y,r.ancho,r.alto,E(TXT(r.etiqueta)||TXT(r.nombre))]});
+const W=Math.max(0,...Object.values(POSICIONES).map(q=>q[0]+q[2]))+9,H=Math.max(0,...Object.values(POSICIONES).map(q=>q[1]+q[3]))+8; /* tamaño del diagrama */
+/* optativas: idiomas (nivel 1, nivel 2 y acreditación) y optativas */
+const OPTIDI=[],IDIOMAS=[];
+lista('optativas').forEach((r,i)=>{
+ if(!r||!IDOK(r.id)||!TXT(r.nombre)||(r.tipo!=='Optativa'&&r.tipo!=='Idioma')){descartar('optativas',i,'faltan datos o tipo no válido');return}
+ OPTIDI.push([r.id,E(TXT(r.nombre)),r.tipo,NUM(r.horas),(Array.isArray(r.correlativas)?r.correlativas.filter(IDOK):[]).join(', ')||null,NUM(r.minimoMateriasAprobadas)]);
+ if(r.tipo==='Idioma'&&IDOK(r.idioma)){let L=IDIOMAS.find(x=>x.k===r.idioma);if(!L)IDIOMAS.push(L={k:r.idioma});
+  const nv=String(r.nivel);if(nv==='1')L.n1=r.id;else if(nv==='2')L.n2=r.id;else if(nv==='acreditacion')L.acr=r.id}});
+for(let i=IDIOMAS.length-1;i>=0;i--){const L=IDIOMAS[i];if(!(L.n1&&L.n2&&L.acr)){console.warn('[Foja Cero] bloque "optativas": el idioma "'+L.k+'" necesita nivel 1, nivel 2 y acreditación');IDIOMAS.splice(i,1)}}
+/* horarios: comisiones de cátedras */
+const HORARIOS=[];
+lista('horarios').forEach((r,i)=>{
+ const bl=(r&&Array.isArray(r.bloques)?r.bloques:[]).map(b=>[b&&b.dia,HORA(b&&b.inicio),HORA(b&&b.fin)]).filter(b=>DIAS.includes(b[0])&&b[1]&&b[2]&&mh(b[1])<mh(b[2]));
+ if(!r||!IDOK(r.codigo)||!bl.length){descartar('horarios',i,'sin código o sin bloques válidos');return}
+ const cat=TXT(r.catedra);
+ HORARIOS.push({cod:r.codigo,cat:cat&&cat!=='Única'?E(cat):null,com:NUM(r.comision),tit:TXT(r.titular)?E(TXT(r.titular)):null,
+  adj:(Array.isArray(r.adjuntos)?r.adjuntos:[]).map(TXT).filter(Boolean).map(E),mod:E(TXT(r.modalidad)),b:bl,obs:TXT(r.observaciones)?E(TXT(r.observaciones)):null})});
+/* fechas importantes, links, aviso y actividades */
+const FECHAS=[];
+lista('fechas').forEach((r,i)=>{const a=Date.parse(r&&r.inicio),b=Date.parse(r&&r.fin);
+ if(!r||!IDOK(r.id)||!TXT(r.titulo)||isNaN(a)||isNaN(b)||b<a||FECHAS.some(f=>f.id===r.id)){descartar('fechas',i,'datos inválidos');return}
+ FECHAS.push({id:r.id,titulo:TXT(r.titulo),desde:r.inicio,hasta:r.fin,texto:TXT(r.textoSIU)})});
+const LINKS=[];
+lista('links').forEach((r,i)=>{if(!r||!IDOK(r.id)||!TXT(r.nombre)||LINKS.some(l=>l.id===r.id)){descartar('links',i,'datos inválidos');return}
+ LINKS.push({id:r.id,nombre:TXT(r.nombre),url:URLOK(r.url)?r.url.trim():null,texto:TXT(r.textoChico),usaFechas:r.usaTextoDeFechas===true})});
+const AVISO=(()=>{const a=bloque('aviso');if(!a)return null;if(typeof a!=='object'||Array.isArray(a)){ERRD.aviso=1;console.error('[Foja Cero] bloque "aviso": se esperaba un objeto');return null}
+ return{activo:a.activo===true,texto:TXT(a.texto),enlace:URLOK(a.enlace)?a.enlace.trim():null,textoEnlace:TXT(a.textoEnlace),enlaceMalo:!!TXT(a.enlace)&&!URLOK(a.enlace)}})();
+const ACTS=[];
+lista('actividades').forEach((r,i)=>{if(!r||!IDOK(r.id)||!TXT(r.titulo)){descartar('actividades',i,'sin id o título');return}if(r.visible!==true)return;
+ ACTS.push({titulo:TXT(r.titulo),org:TXT(r.organizador),cuando:TXT(r.cuando),orden:/^\d{4}-\d{2}-\d{2}$/.test(r.fechaOrden||'')?r.fechaOrden:null,req:TXT(r.requisitos),
+  url:URLOK(r.enlace)?r.enlace.trim():null,enlaceMalo:!!TXT(r.enlace)&&!URLOK(r.enlace),txtEnl:TXT(r.textoEnlace),autor:TXT(r.autor)})});
+ACTS.sort((a,b)=>a.orden&&b.orden?(a.orden<b.orden?-1:a.orden>b.orden?1:0):a.orden?-1:b.orden?1:0);
 
 /* ===== GUARDADO (módulo separado; luego se puede reemplazar por cuentas de usuario) ===== */
 const Guardado={clave:'fojacero.v1',
@@ -921,7 +1031,7 @@ const peso=id=>id==='OYE'?progresoHoras():fill(id); /* aporte al porcentaje: Idi
 /* ===== IDIOMA, OPTATIVAS Y ELECTIVAS ===== */
 const OPT={};OPTIDI.forEach(r=>OPT[r[0]]={id:r[0],nombre:r[1],tipo:r[2],horas:r[3]||0,reqs:r[4]||'',cant:r[5]||0});
 const OPTS=OPTIDI.filter(r=>r[2]==='Optativa').map(r=>OPT[r[0]]);
-const nomIdioma=k=>OPT[IDIOMAS.find(x=>x.k===k).acr].nombre.replace('Acreditación ','');
+const nomIdioma=k=>{const L=IDIOMAS.find(x=>x.k===k);return L&&OPT[L.acr]?OPT[L.acr].nombre.replace('Acreditación ',''):k};
 est.ok=(est.ok||[]).filter(id=>D[id]);
 est.idioma=est.idioma&&IDIOMAS.some(x=>x.k===est.idioma.l)?{l:est.idioma.l,m:['primero','cursado','acred'].includes(est.idioma.m)?est.idioma.m:'no'}:{l:null,m:'no'};
 est.horasEle=Math.min(CONFIG.horasTotal,Math.max(0,+est.horasEle||0));
@@ -943,11 +1053,11 @@ function estadoOpt(o){const f=[];
  if(materiasParaRequisitoOptativa()<o.cant)partes.push(`Requiere ${o.cant} materias aprobadas`);
  return{ok:!partes.length,txt:partes.length?partes.join(' · '):'Podés cursarla'}}
 function horas(){let X=0,Y=est.horasEle,ex=0;est.opt.forEach(id=>X+=OPT[id].horas);
- if(idiomaCompleto()){const c=CONFIG.idiomasCuentanPara,h=CONFIG.horasIdioma;if(c==='optativas')X+=h;else if(c==='electivas')Y+=h;else if(c==='total')ex=h}
+ if(idiomaCompleto()){const c=CONFIG.idiomasCuentanPara,L=IDIOMAS.find(x=>x.k===est.idioma.l),h=L?OPT[L.n1].horas+OPT[L.n2].horas:0;if(c==='optativas')X+=h;else if(c==='electivas')Y+=h;else if(c==='total')ex=h}
  const Z=X+Y+ex,F=Math.max(CONFIG.horasTotal-Z,Math.max(0,CONFIG.horasMinOptativas-X)+Math.max(0,CONFIG.horasMinElectivas-Y));
  return{X,Y,Z,F}}
-const oyeCompleta=()=>horas().F===0;
-const progresoHoras=()=>Math.max(0,(CONFIG.horasTotal-horas().F)/CONFIG.horasTotal);
+const oyeCompleta=()=>CONFIG.horasTotal>0&&horas().F===0;
+const progresoHoras=()=>CONFIG.horasTotal?Math.max(0,(CONFIG.horasTotal-horas().F)/CONFIG.horasTotal):0;
 /* Textos de las tarjetas del plan (el idioma elegido y las optativas hechas se ven en el plan) */
 function txtIdioma(){const i=est.idioma;if(!i.l||i.m==='no')return'Idioma Extranjero';return`<em class="tx">Idioma Extranjero<small>${nomIdioma(i.l)}${i.m==='primero'?' · falta el nivel 2':''}</small></em>`}
 function txtOye(){const h=horas(),n=est.opt.length,ls=est.opt.slice(0,5).map(id=>`<li>${OPT[id].nombre} · ${OPT[id].horas} h</li>`);
@@ -956,11 +1066,11 @@ function txtOye(){const h=horas(),n=est.opt.length,ls=est.opt.slice(0,5).map(id=
 const txt=id=>id==='IDI'?txtIdioma():id==='OYE'?txtOye():nom(id);
 
 /* ===== HORARIOS: simulador ===== */
-const DIAS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],HORA0=8,HORA1=22; /* grilla de 8:00 a 22:00 */
+const HORA0=8,HORA1=22; /* grilla de 8:00 a 22:00 */
 const COM={},COMS={};
-HORARIOS.forEach(r=>{const id=[r[0],r[1]||'U',r[2]||0].join('|');
- COM[id]={id,cod:r[0],cat:r[1]||'Única',com:r[2],tit:r[3],adj:r[4]?r[4].split(';').map(x=>x.trim()).filter(Boolean):[],mod:r[5],b:r[6],obs:r[7]};
- (COMS[r[0]]=COMS[r[0]]||[]).push(COM[id])});
+HORARIOS.forEach(r=>{const id=[r.cod,r.cat||'U',r.com||0].join('|');if(COM[id]){console.warn('[Foja Cero] bloque "horarios": comisión repetida ('+id+')');return}
+ COM[id]={id,cod:r.cod,cat:r.cat||'Única',com:r.com,tit:r.tit,adj:r.adj,mod:r.mod,b:r.b,obs:r.obs};
+ (COMS[r.cod]=COMS[r.cod]||[]).push(COM[id])});
 est.hor=(est.hor||[]).filter((id,i,a)=>COM[id]&&a.findIndex(x=>COM[x]&&COM[x].cod===COM[id].cod)===i); /* una comisión por materia */
 const minH=h=>{const q=h.split(':');return +q[0]*60+ +q[1]};
 const nomMat=c=>D[c]?nom(c):OPT[c]?OPT[c].nombre:c;
@@ -1004,7 +1114,8 @@ function trazar(){
   return`<path class="g" data-t="${c}" d="${d}"/><path class="l" data-t="${c}" pathLength="1" d="${d}" style="animation-delay:${450+Math.round(Q.y/H*500)}ms"/>`}).join('')}
 function dibujar(){
  const ord=Object.keys(POSICIONES).sort((a,b)=>POSICIONES[a][1]-POSICIONES[b][1]||POSICIONES[a][0]-POSICIONES[b][0]);
- esc.innerHTML=`<svg id="ln" viewBox="0 0 ${W} ${H}">${trazar()}</svg>`+ord.map((id,i)=>{const[x,y,w,h,l]=POSICIONES[id];
+ esc.style.width=W+'px';esc.style.height=H+'px';
+ esc.innerHTML=`<svg id="ln" viewBox="0 0 ${W} ${H}" style="width:${W}px;height:${H}px">${trazar()}</svg>`+ord.map((id,i)=>{const[x,y,w,h,l]=POSICIONES[id];
   return`<div class="m${id==='OYE'?' oyeb':''}" role="button" tabindex="0" data-id="${id}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;animation-delay:${i*28}ms"><span>${txt(id)}</span><div class="f"><span>${txt(id)}</span></div></div>`}).join('')}
 function pintar(){esc.querySelectorAll('.m').forEach(b=>{const f=fill(b.dataset.id),e=b.querySelector('.f');e.classList.toggle('f1',f===1);e.classList.toggle('f2',f===.5);if(b.dataset.id==='OYE')e.style.clipPath=`inset(0 ${(1-progresoHoras())*100}% 0 0)`})} /* Optativas y electivas: se va llenando con las horas */
 /* Zoom para celular (componente reutilizable: plan y grilla): entra completo en el ancho; − / Ajustar / + hasta 150 % */
@@ -1015,7 +1126,7 @@ const ZP=mkZoom(vista,()=>W,()=>ajustar());
 function ajustar(){if(!vista.clientWidth)return;const s=MQM.matches?ZP.cur():innerWidth<=820?.5:Math.min((vista.clientWidth-4)/W,(vista.clientHeight-4)/H);hoja.style.width=W*s+'px';hoja.style.height=H*s+'px';esc.style.transform=`scale(${s})`;esc.style.setProperty('--k',s)}
 
 /* ===== PROGRESO ===== */
-const T=Object.keys(POSICIONES).length,fmt=x=>String(Math.round(x*2)/2).replace('.',',');let cur=0,raf;
+const T=Object.keys(POSICIONES).length||1,fmt=x=>String(Math.round(x*2)/2).replace('.',',');let cur=0,raf;
 function prog(inst){const s=Object.keys(POSICIONES).reduce((a,k)=>a+peso(k),0);$('pista').style.transform=`scaleX(${s/T})`;
  cancelAnimationFrame(raf);const a=cur,t0=performance.now();
  const paso=t=>{const k=inst||RM?1:Math.min(1,(t-t0)/450);cur=a+(s-a)*(1-Math.pow(1-k,3));$('nf').textContent=Math.round(cur/T*100);if(k<1)raf=requestAnimationFrame(paso)};paso(t0)}
@@ -1031,6 +1142,7 @@ const MODOS=[['cursado','Completo por cursado (nivel 1 y 2)'],['acred','Completo
 function estadoIdioma(){const i=est.idioma;if(!i.l)return'Elegí el idioma que hiciste.';const n=nomIdioma(i.l);
  return i.m==='cursado'?`${n} completo por cursado. Cuenta como una materia.`:i.m==='acred'?`${n} completo por acreditación. Cuenta como una materia.`:i.m==='primero'?`Te falta el nivel 2 de ${n} (o acreditarlo).`:'Elegí cómo lo hiciste.'}
 function htmlIdioma(){const i=est.idioma;
+ if(!IDIOMAS.length)return'<button class="x" aria-label="Cerrar">×</button><h2>Idioma Extranjero</h2><p class="est2">No se pudieron cargar los idiomas.</p>';
  return`<button class="x" aria-label="Cerrar">×</button><h2>Idioma Extranjero</h2><p class="q">¿Qué idioma hiciste?</p><div class="chips">${IDIOMAS.map(L=>`<button class="bt${i.l===L.k?' p':''}" data-a="lg" data-k="${L.k}">${nomIdioma(L.k)}</button>`).join('')}</div><p class="q">¿Cómo lo hiciste?</p><div class="chips c1">${MODOS.map(([k,t])=>`<button class="bt${i.l&&i.m===k?' p':''}" data-a="md" data-k="${k}"${i.l?'':' disabled'}>${t}</button>`).join('')}</div><p class="est2">${estadoIdioma()}</p><button class="bt" data-a="vi">Ver los horarios</button>`}
 function htmlOyeP(){const h=horas(),C=CONFIG;
  return`<button class="x" aria-label="Cerrar">×</button><h2>Optativas y electivas</h2><div class="hrs"><div class="hr"><span>Optativas</span><span><b>${h.X} de ${C.horasMinOptativas}</b> (mínimo)</span></div><div class="hr"><span>Electivas</span><span><b>${h.Y} de ${C.horasMinElectivas}</b> (mínimo)</span></div><div class="hr"><span>Total</span><span><b>${h.Z} de ${C.horasTotal}</b></span></div></div><p class="hm${h.F?'':' ok'}">${h.F?`Te faltan ${h.F} horas`:'Ya cumplís todas las horas'}</p><div class="stp"><span>Horas de electivas</span><div><button class="st" data-a="e-" aria-label="Restar ${C.pasoElectivas} horas"${est.horasEle<=0?' disabled':''}>−</button><b>${est.horasEle}</b><button class="st" data-a="e+" aria-label="Sumar ${C.pasoElectivas} horas"${est.horasEle>=C.horasTotal?' disabled':''}>+</button></div></div><button class="bt p" data-a="opt">Elegir optativas</button>`}
@@ -1069,13 +1181,13 @@ function textos(){['IDI','OYE'].forEach(id=>{const b=esc.querySelector(`.m[data-
 const mod=$('mod');
 function resumenMod(){const h=horas();$('mcont').textContent=`Optativas: ${h.X} de ${CONFIG.horasMinOptativas} h (mínimo) · Total: ${h.Z} de ${CONFIG.horasTotal} h`}
 function abrirMod(){resumenMod();
- $('mlist').innerHTML=OPTS.slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,'es')).map(o=>{const st=estadoOpt(o),on=est.opt.includes(o.id);
+ $('mlist').innerHTML=!OPTS.length?'<p class="vacio3">'+(ERRD.optativas?'No se pudieron cargar las optativas.':'No hay optativas cargadas.')+'</p>':OPTS.slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,'es')).map(o=>{const st=estadoOpt(o),on=est.opt.includes(o.id);
   return`<label class="mr${on?' hecha':''}"><span class="mn"><b>${o.nombre}</b><small>${o.horas} h</small></span><span class="ms${st.ok?' ok':''}">${st.txt}<div class="mv">${vcHTML(o.id)}</div></span><span class="ck"><input type="checkbox" data-o="${o.id}"${on?' checked':''}><em>Ya la hice</em></span></label>`}).join('');
  $('mlist').scrollTop=0;mod.classList.add('on');lock()}
 function cerrarMod(){mod.classList.remove('on');lock()}
 function lock(){document.documentElement.classList.toggle('mo',!!document.querySelector('.mod.on'))}
 const btnCat=id=>COMS[id]?`<button class="bt" data-a="vc" data-k="${id}">Ver cátedras</button>`:'<button class="bt" disabled>No tiene cátedras</button>';
-const vcHTML=id=>{const L=COMS[id];if(!L)return'<span class="sh">Sin horarios registrados: no se dictó en 2026</span>';
+const vcHTML=id=>{const L=COMS[id];if(!L)return'<span class="sh">'+E(CONFIG.leyendaSinHorarios||'Sin horarios registrados')+'</span>';
  if(L.length>1)return`<button class="vcb" type="button" data-k="${id}">Ver cátedras</button>`;
  const on=est.hor.includes(L[0].id);return`<button class="vcb${on?' p':''}" type="button" data-k="${id}">${on?'Quitar del horario':'Agregar al horario'}</button><span class="sh">${textoDias(L[0])}</span>`};
 mod.addEventListener('click',e=>{const v=e.target.closest('.vcb');if(v){e.preventDefault();const L=COMS[v.dataset.k];
@@ -1094,9 +1206,9 @@ function pintarCat(){let h=catCods.some(esIdioma)?'<p class="avc">Los idiomas no
   if(multi)h+=`<h4 class="cg">${nomMat(c)}</h4>`;
   if(!cumpleCorr(c))h+='<p class="avc">Todavía no cumplís las correlativas</p>';
   h+=L.length?L.map(k=>{const on=est.hor.includes(k.id);
-   return`<div class="cc${on?' sel':''}"><div class="cch"><b>${etiquetaCom(k)}</b><span class="tg ${k.mod==='Promocional'?'pr':'rg'}">${k.mod}</span></div>${k.tit?`<p><i>Titular</i>${k.tit}</p>`:''}${k.adj.length?`<p><i>Adjuntos</i>${k.adj.join(' · ')}</p>`:''}<p><i>Días y horarios</i>${textoDias(k)}</p>${k.obs?`<p class="obs">${k.obs}</p>`:''}<button class="pbt${on?'':' p'}" data-c="${k.id}">${on?'Quitar de mi horario':'Agregar a mi horario'}</button></div>`}).join(''):`<p class="vacio3">${OPT[c]&&OPT[c].tipo==='Optativa'?'Sin horarios registrados: no se dictó en 2026':'Esta materia no tiene cátedras'}</p>`});
+   return`<div class="cc${on?' sel':''}"><div class="cch"><b>${etiquetaCom(k)}</b><span class="tg ${k.mod==='Promocional'?'pr':'rg'}">${k.mod}</span></div>${k.tit?`<p><i>Titular</i>${k.tit}</p>`:''}${k.adj.length?`<p><i>Adjuntos</i>${k.adj.join(' · ')}</p>`:''}<p><i>Días y horarios</i>${textoDias(k)}</p>${k.obs?`<p class="obs">${k.obs}</p>`:''}<button class="pbt${on?'':' p'}" data-c="${k.id}">${on?'Quitar de mi horario':'Agregar a mi horario'}</button></div>`}).join(''):`<p class="vacio3">${OPT[c]&&OPT[c].tipo==='Optativa'?E(CONFIG.leyendaSinHorarios||'Sin horarios registrados'):'Esta materia no tiene cátedras'}</p>`});
  $('clist').innerHTML=h}
-function abrirCat(cods,tit){catCods=cods;$('ctit').textContent=tit;pintarCat();$('clist').scrollTop=0;mod2.classList.add('on');lock()}
+function abrirCat(cods,tit){catCods=cods;$('ctit').textContent=un(tit);pintarCat();$('clist').scrollTop=0;mod2.classList.add('on');lock()}
 function cerrarCat(){mod2.classList.remove('on');lock()}
 mod2.addEventListener('click',e=>{if(e.target===mod2||e.target.closest('.mx'))return cerrarCat();const b=e.target.closest('[data-c]');if(!b)return;const id=b.dataset.c;est.hor.includes(id)?quitarCom(id):agregarCom(id)});
 function cambioH(){Guardado.escribir(est);pintarHorarios();if(mod2.classList.contains('on')){const sc=$('clist').scrollTop;pintarCat();$('clist').scrollTop=sc}}
@@ -1104,8 +1216,9 @@ function cambioH(){Guardado.escribir(est);pintarHorarios();if(mod2.classList.con
 /* ===== Sección "Mis horarios" ===== */
 function pintarHorarios(){const{pares,flags}=superposiciones(),n=materiasContadas(),av=[];
  pares.forEach(([d,a,b])=>av.push(`<b>Se superponen:</b> ${nomMat(a.cod)} y ${nomMat(b.cod)} (${d})`));
- if(n===4)av.push('El sistema permite anotarse a 3 materias; una cuarta solo es posible si quedan cupos vacantes');
- else if(n>=5)av.push('Superás el máximo de materias que permite el sistema');
+ const LM=CONFIG.limiteMaterias,ORD=['primera','segunda','tercera','cuarta','quinta','sexta','séptima','octava','novena','décima'];
+ if(n===LM+1)av.push(`El sistema permite anotarse a ${LM} materias; una ${ORD[LM]||'más'} solo es posible si quedan cupos vacantes`);
+ else if(n>=LM+2)av.push('Superás el máximo de materias que permite el sistema');
  $('havisos').innerHTML=av.map(t=>`<p class="av">${t}</p>`).join('');
  let h='<div class="hd0"></div>'+DIAS.map(d=>`<div class="hd">${d}</div>`).join('');
  h+='<div class="hts">'+Array.from({length:(HORA1-HORA0)/2},(_,i)=>`<span style="top:calc(${2*i}*var(--hh))">de ${HORA0+2*i} a ${HORA0+2*i+2}</span>`).join('')+'</div>';
@@ -1115,7 +1228,7 @@ function pintarHorarios(){const{pares,flags}=superposiciones(),n=materiasContada
  $('hgrid').innerHTML=h;nuevoId=null;if(!est.hor.includes(hSel))hSel=null;detalleH();
  const ob=est.hor.map(id=>COM[id]).filter(k=>k.obs);
  $('hobs').innerHTML=ob.length?`<div class="hob"><h4>Observaciones</h4>${ob.map(k=>`<p><b>${nomMat(k.cod)} · ${etiquetaCom(k)}:</b> ${k.obs}</p>`).join('')}</div>`:'';
- $('hlist').innerHTML=est.hor.length?est.hor.map(id=>{const k=COM[id];return`<div class="hr2"><b>${nomMat(k.cod)}</b><span>${etiquetaCom(k)}</span><span>${k.tit||'—'}</span><span class="tg ${k.mod==='Promocional'?'pr':'rg'}">${k.mod}</span><button class="pbt" data-q="${id}">Quitar</button></div>`}).join(''):'<p class="vacio3">Todavía no agregaste ninguna comisión.</p>';
+ $('hlist').innerHTML=est.hor.length?est.hor.map(id=>{const k=COM[id];return`<div class="hr2"><b>${nomMat(k.cod)}</b><span>${etiquetaCom(k)}</span><span>${k.tit||'—'}</span><span class="tg ${k.mod==='Promocional'?'pr':'rg'}">${k.mod}</span><button class="pbt" data-q="${id}">Quitar</button></div>`}).join(''):(ERRD.horarios?'<p class="vacio3">No se pudieron cargar los horarios.</p>':'<p class="vacio3">Todavía no agregaste ninguna comisión.</p>');
  $('dlHor').disabled=!est.hor.length}
 let hSel=null; /* comisión tocada en la grilla (celular) */
 function detalleH(){const k=COM[hSel];
@@ -1142,6 +1255,7 @@ function envolver(x,t,mw){const L=[];let l='';String(t).split(' ').forEach(p=>{c
 async function fuentes(){try{await document.fonts.ready;await Promise.all([400,500,600,700].map(w=>document.fonts.load(`${w} 24px "Inter Tight"`)))}catch(e){}}
 const CW=1920,CH=1080,MG=24,CAB=112,PIE=44; /* imágenes horizontales 16:9 */
 function base(cat,extra){const c=document.createElement('canvas');c.width=CW;c.height=CH;const x=c.getContext('2d');
+ const _f=x.fillText.bind(x),_m=x.measureText.bind(x);x.fillText=(t,...a)=>_f(un(t),...a);x.measureText=t=>_m(un(t)); /* los textos de los datos vienen escapados para HTML */
  x.fillStyle=PAL.n;x.fillRect(0,0,CW,CH);
  [[220,80,900,'27,177,231',.30],[1760,1040,900,'124,44,59',.20],[1500,300,600,'27,177,231',.14]].forEach(([a,b,r,col,al])=>{const g=x.createRadialGradient(a,b,0,a,b,r);g.addColorStop(0,`rgba(${col},${al})`);g.addColorStop(1,`rgba(${col},0)`);x.fillStyle=g;x.fillRect(0,0,CW,CH)});
  x.textAlign='left';x.fillStyle=PAL.b;x.font=`700 64px ${FF}`;x.fillText('Foja Cero',MG,76);const tw=x.measureText('Foja Cero').width;
@@ -1161,7 +1275,7 @@ function caja(x,id){const[bx,by,w,h]=POSICIONES[id],fr=id==='OYE'?progresoHoras(
  if(fr>0){x.save();rr(x,bx,by,w,h,20);x.clip();x.beginPath();x.rect(bx,by,w*fr,h);x.clip();x.fillStyle=PAL.b;x.fillRect(bx,by,w*fr,h);txtc(PAL.n);x.restore()}
  x.save();rr(x,bx,by,w,h,20);x.lineWidth=3;x.strokeStyle=PAL.b;x.stroke();x.restore()}
 async function imgProgreso(){await fuentes();const{c,x,hx}=base('Mi progreso');
- const ids=Object.keys(POSICIONES),sm=ids.reduce((a,k)=>a+peso(k),0),p=Math.round(sm/ids.length*100);
+ const ids=Object.keys(POSICIONES),sm=ids.reduce((a,k)=>a+peso(k),0),p=Math.round(sm/(ids.length||1)*100);
  x.textAlign='left';x.fillStyle=PAL.b;x.font=`700 64px ${FF}`;const px=hx+70,pt=p+' %';x.fillText(pt,px,76);
  const pw=x.measureText(pt).width;x.font=`500 28px ${FF}`;x.fillText('de la carrera',px+pw+14,74);
  const bx=px+pw+14+x.measureText('de la carrera').width+40,bw=CW-MG-bx;
@@ -1178,7 +1292,7 @@ function ajusteBloque(x,k,bw,bh){const iw=bw-16;
   x.font=`400 ${s*.82}px ${FF}`;const ll=envolver(x,etiquetaCom(k),iw);
   if(nl.length*s*1.18+ll.length*s*.82*1.2+s*.7*1.25+12<=bh)return{s,nl,ll}}
  x.font=`700 13px ${FF}`;const nl=envolver(x,nomMat(k.cod),iw).slice(0,3);x.font=`400 13px ${FF}`;return{s:13,nl,ll:envolver(x,etiquetaCom(k),iw).slice(0,1)}}
-async function imgHorarios(){await fuentes();const{c,x}=base('Mis horarios','Horarios de 2026, sujetos a cambios');
+async function imgHorarios(){await fuentes();const{c,x}=base('Mis horarios',CONFIG.leyendaHorariosCorta);
  const L=est.hor.map(id=>COM[id]);let h0=HORA0,h1=HORA1;
  if(L.length){const ts=L.flatMap(k=>k.b.map(b=>[minH(b[1]),minH(b[2])]));
   h0=Math.max(HORA0,2*Math.floor(Math.min(...ts.map(t=>t[0]))/120));h1=Math.min(HORA1,2*Math.ceil(Math.max(...ts.map(t=>t[1]))/120));if(h1<=h0)h1=h0+2}
@@ -1234,40 +1348,58 @@ async function generar(btn,fn,nombre){const t=btn.textContent;btn.disabled=true;
 $('dlProg').addEventListener('click',e=>generar(e.currentTarget,imgProgreso,'foja-cero-mi-progreso.png'));
 $('dlHor').addEventListener('click',e=>generar(e.currentTarget,imgHorarios,'foja-cero-mis-horarios.png'));
 
-/* ===== FECHAS IMPORTANTES (editá solo este bloque cada cuatrimestre) =====
-   Horario de Argentina (UTC-3, 24 h). El offset va en cada fecha, así el cálculo no depende de la zona del dispositivo.
-   'hasta' incluye todo el minuto indicado (23:59 cierra a las 23:59:59). */
-const ZONA='America/Argentina/Buenos_Aires';
-const FECHAS=[
- {id:'insc',titulo:'Inscripción al turno de diciembre',desde:'2026-11-23T08:00-03:00',hasta:'2026-11-24T23:59-03:00'},
- {id:'recl',titulo:'Reclamos',desde:'2026-11-25T08:00-03:00',hasta:'2026-11-25T23:59-03:00'},
- {id:'turno',titulo:'Turno de examen',desde:'2026-11-30T00:00-03:00',hasta:'2026-12-23T23:59-03:00'}
-];
-/* LINKS: 'texto' fijo, o 'porFecha' = texto chico mientras esa fecha (id de FECHAS) está activa */
-const LINKS=[
- {nombre:'SIU Guaraní',url:'https://servicios.unl.edu.ar/guarani3/autogestion/',porFecha:{insc:'Para inscribirse',recl:'Para reclamos'}},
- {nombre:'Bedelía 3.0',url:'https://servicios.unl.edu.ar/bedeliamovil/jYruY',texto:'¿En qué aula curso?'},
- {nombre:'Aula Virtual',url:'https://servicios.unl.edu.ar/aulavirtual/fcjs/login/index.php'}
-];
-
 /* ===== PANTALLA DE INICIO ===== */
-const rango=f=>[Date.parse(f.desde),Date.parse(f.hasta)+59999];
+/* 'fin' incluye todo el minuto indicado (23:59 cierra a las 23:59:59); si trae segundos, esos segundos */
+const rango=f=>[Date.parse(f.desde),Date.parse(f.hasta)+(/T\d{2}:\d{2}:\d{2}/.test(f.hasta)?999:59999)];
 const activa=f=>{const[a,b]=rango(f),n=Date.now();return n>=a&&n<=b};
 const fF=ms=>new Date(ms).toLocaleString('es-AR',{timeZone:ZONA,weekday:'long',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).replace(/,/g,'');
-$('fcs').innerHTML=FECHAS.map(f=>`<div class="fc" id="f_${f.id}"><h3>${f.titulo}</h3><p><span>Desde</span> ${fF(Date.parse(f.desde))}</p><p><span>Hasta</span> ${fF(Date.parse(f.hasta))}</p><div class="est"></div><div class="cd"><div><b>00</b><small>días</small></div><div><b>00</b><small>horas</small></div><div><b>00</b><small>min</small></div><div><b>00</b><small>seg</small></div></div></div>`).join('');
-$('lks').innerHTML=LINKS.map((l,i)=>`<a class="lk" href="${l.url}" target="_blank" rel="noopener noreferrer"><span>${l.nombre}</span><small id="l_${i}">${l.texto||''}</small><i class="ar">↗</i></a>`).join('');
+(function(){const g=$('fcs');
+ if(ERRD.fechas){g.appendChild(nuevo('p','vacio3','No se pudieron cargar las fechas.'));return}
+ FECHAS.forEach(f=>{const c=nuevo('div','fc');c.id='f_'+f.id;c.appendChild(nuevo('h3',null,f.titulo));
+  [['Desde',f.desde],['Hasta',f.hasta]].forEach(([k,v])=>{const q=nuevo('p');q.appendChild(nuevo('span',null,k));q.appendChild(document.createTextNode(' '+fF(Date.parse(v))));c.appendChild(q)});
+  c.appendChild(nuevo('div','est'));const cd=nuevo('div','cd');
+  ['días','horas','min','seg'].forEach(l=>{const q=nuevo('div');q.appendChild(nuevo('b',null,'00'));q.appendChild(nuevo('small',null,l));cd.appendChild(q)});c.appendChild(cd);g.appendChild(c)})})();
+(function(){const g=$('lks');
+ if(ERRD.links){g.appendChild(nuevo('p','vacio3','No se pudieron cargar los links.'));return}
+ LINKS.forEach((l,i)=>{const a=nuevo(l.url?'a':'div','lk');if(l.url){a.href=l.url;a.target='_blank';a.rel='noopener noreferrer'}
+  a.appendChild(nuevo('span',null,l.nombre));const s=nuevo('small',null,l.usaFechas?'':l.texto);s.id='l_'+i;a.appendChild(s);if(l.url)a.appendChild(nuevo('i','ar','↗'));g.appendChild(a)})})();
 function tic(){const n=Date.now();
  FECHAS.forEach(f=>{const el=$('f_'+f.id),[a,b]=rango(f);let t=0,txt='Finalizado',cl='fin';
   if(n<a){t=a-n;txt='Comienza en';cl='pre'}else if(n<=b){t=b-n;txt='Finaliza en';cl='act'}
   el.className='fc '+cl;el.querySelector('.est').textContent=txt;
   const s=Math.floor(t/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];
   el.querySelectorAll('.cd b').forEach((e,i)=>e.textContent=String(v[i]).padStart(2,'0'))});
- LINKS.forEach((l,i)=>{if(!l.porFecha)return;const k=Object.keys(l.porFecha).find(id=>FECHAS.some(f=>f.id===id&&activa(f)));$('l_'+i).textContent=k?l.porFecha[k]:''})}
+ LINKS.forEach((l,i)=>{const sm=$('l_'+i);if(!sm||!l.usaFechas)return;const f=FECHAS.find(f=>f.texto&&activa(f));sm.textContent=f?f.texto:l.texto})}
+/* "Datos actualizados el dd/mm/aaaa" (config.actualizado); si falta o no es una fecha válida, no se muestra */
+function pintarActualizado(){const el=$('actualizado'),m=/^(\d{4})-(\d{2})-(\d{2})(T[\d:.+\-Z]*)?$/.exec(CONFIG.actualizado||'');
+ if(m){const y=+m[1],mo=+m[2],d=+m[3],t=new Date(Date.UTC(y,mo-1,d));
+  if(t.getUTCFullYear()===y&&t.getUTCMonth()===mo-1&&t.getUTCDate()===d){el.textContent='Datos actualizados el '+m[3]+'/'+m[2]+'/'+m[1];el.hidden=false;return}}
+ el.hidden=true}
+/* Aviso destacado (se recuerda el cierre durante la visita) */
+function pintarAviso(){const el=$('aviso');
+ if(!AVISO||!AVISO.activo||!AVISO.texto){el.hidden=true;return}
+ let c=null;try{c=sessionStorage.getItem('fojacero.aviso')}catch(e){}
+ if(c===AVISO.texto){el.hidden=true;return}
+ el.textContent='';el.appendChild(nuevo('span',null,AVISO.texto));
+ if(AVISO.enlace){const a=nuevo('a',null,AVISO.textoEnlace||'Más información');a.href=AVISO.enlace;a.target='_blank';a.rel='noopener noreferrer';el.appendChild(a)}
+ else if(AVISO.enlaceMalo&&AVISO.textoEnlace)el.appendChild(nuevo('span',null,AVISO.textoEnlace));
+ const b=nuevo('button',null,'×');b.type='button';b.setAttribute('aria-label','Cerrar aviso');
+ b.addEventListener('click',()=>{el.hidden=true;try{sessionStorage.setItem('fojacero.aviso',AVISO.texto)}catch(e){}});el.appendChild(b);el.hidden=false}
+/* Actividades */
+function pintarActs(){const g=$('actgrid');g.textContent='';
+ if(ERRD.actividades){g.appendChild(nuevo('p','vacio3','No se pudieron cargar las actividades.'));return}
+ if(!ACTS.length){g.appendChild(nuevo('p','vacio3','No hay actividades por ahora.'));return}
+ ACTS.forEach(a=>{const c=nuevo('article','act');c.appendChild(nuevo('h3',null,a.titulo));
+  if(a.org)c.appendChild(nuevo('span','tg',a.org));
+  [['Cuándo',a.cuando],['Requisitos',a.req]].forEach(([k,v])=>{if(!v)return;const q=nuevo('p');q.appendChild(nuevo('i',null,k));q.appendChild(document.createTextNode(v));c.appendChild(q)});
+  if(a.url){const b=nuevo('a','pbt p',a.txtEnl||'Más información');b.href=a.url;b.target='_blank';b.rel='noopener noreferrer';c.appendChild(b)}
+  else if(a.enlaceMalo&&a.txtEnl)c.appendChild(nuevo('p',null,a.txtEnl));
+  if(a.autor)c.appendChild(nuevo('small','aut','Aporte de '+a.autor));g.appendChild(c)})}
 function pintarAvance(){const s=Object.keys(POSICIONES).reduce((a,k)=>a+peso(k),0),p=Math.round(s/T*100),el=$('avance');
  el.innerHTML=s?`<span class="pct"><b>${p}</b> % de la carrera</span><div class="pista"><b></b></div>`:'<span class="vacio">Todavía no marcaste ninguna materia. Entrá a tu carrera y empezá marcando las que ya aprobaste.</span>';
  const b=el.querySelector('.pista b');if(b)setTimeout(()=>b.style.transform=`scaleX(${p/100})`,40)}
 /* Navegación por scroll */
-const SECC={inicio:'inicio',fechas:'fechas',plan:'carrera',horarios:'horarios'};
+const SECC={inicio:'inicio',fechas:'fechas',actividades:'actividades',plan:'carrera',horarios:'horarios'};
 function ir(v){menu(false);$(SECC[v]).scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})}
 function espia(){let a='inicio';for(const k in SECC)if($(SECC[k]).getBoundingClientRect().top<=140)a=k;document.querySelectorAll('.nv').forEach(b=>b.classList.toggle('on',b.dataset.v===a));const m=document.documentElement.scrollHeight-innerHeight,p=m>0?Math.min(1,Math.max(0,scrollY/m)):0;$('sb').firstElementChild.style.setProperty('--sp',p)}
 addEventListener('scroll',espia,{passive:true});addEventListener('resize',espia);
@@ -1292,6 +1424,9 @@ document.querySelectorAll('.sr').forEach(el=>io.observe(el));io.observe(esc);
 dibujar();pintar();prog(true);ajustar();
 new ResizeObserver(ajustar).observe(vista);new ResizeObserver(fit).observe(pan);
 tic();setInterval(tic,1000);pintarAvance();pintarCur();pintarHorarios();render(false);espia();aplicarH();
+$('hnota').textContent=ERRD.config?'No se pudo cargar la configuración.':CONFIG.leyendaHorarios;
+if(ERRD.plan)$('vista').insertAdjacentHTML('beforeend','<p class="vacio3">No se pudo cargar el plan de estudios.</p>');
+pintarActs();pintarAviso();pintarActualizado();
 </script>
 </body>
 </html>
